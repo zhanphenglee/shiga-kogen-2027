@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo+Narrow:wght@400;600;700&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --paper:#EFE6D2;
@@ -218,34 +219,40 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   border:1px solid var(--itin-bar);color:var(--itin-bar);
 }
 
-/* ---------- interactive layout map (Overview) ---------- */
-.terrain-wrap{margin:11px 9px 8px;border:1.5px solid var(--ink);background:var(--card);}
-.terrain-wrap .stage{position:relative;width:100%;aspect-ratio:900/620;overflow:hidden;}
-.terrain-wrap svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
-.pin{
-  position:absolute;transform:translate(-50%,-50%);
+/* ---------- interactive layout map (Overview) — real Leaflet map ---------- */
+.mapbox{margin:11px 9px 8px;border:1.5px solid var(--ink);overflow:hidden;background:var(--card);}
+#trip-map{width:100%;height:min(70vh,520px);min-height:320px;background:var(--card);}
+.leaflet-container{font-family:"Newsreader",Georgia,serif;background:var(--card) !important;}
+.pin-badge{
   display:flex;align-items:center;justify-content:center;
-  width:9.5%;max-width:30px;aspect-ratio:1;border-radius:50%;
+  width:26px;height:26px;border-radius:50%;
   background:var(--ink);color:var(--card);
-  font-family:"Archivo Black",sans-serif;font-size:clamp(9px,2.6vw,12px);
-  border:2px solid var(--card);box-shadow:0 2px 4px rgba(0,0,0,.28);
-  text-decoration:none;transition:transform .18s ease,background .18s ease;
+  font-family:"Archivo Black",sans-serif;font-size:11px;
+  border:2px solid var(--card);box-shadow:0 2px 4px rgba(0,0,0,.3);
 }
-.pin:hover,.pin:focus-visible{transform:translate(-50%,-50%) scale(1.2);background:var(--vermilion);}
-.roadtag{
-  position:absolute;transform:translate(-50%,-50%);
-  background:var(--paper);border:1.5px dashed var(--ink-soft);border-radius:5px;
-  font-family:"Archivo Narrow",sans-serif;font-weight:700;
-  font-size:clamp(7.5px,1.9vw,9.5px);letter-spacing:.06em;text-transform:uppercase;
-  color:var(--ink-soft);padding:3px 6px;white-space:nowrap;text-align:center;
+.leaflet-marker-icon:hover .pin-badge{background:var(--vermilion);}
+.leaflet-popup-content-wrapper{
+  background:var(--card);border:1.5px solid var(--ink);border-radius:4px;
+  box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+.leaflet-popup-tip{background:var(--card);border:1.5px solid var(--ink);}
+.leaflet-popup-content{margin:11px 13px;font-size:14px;line-height:1.35;}
+.popcard .num{font-family:"Archivo Black",sans-serif;font-size:11px;color:var(--gold);display:block;margin-bottom:2px;}
+.popcard h4{font-family:"Archivo Black",sans-serif;font-weight:400;font-size:15px;text-transform:uppercase;margin:0 0 4px;line-height:1.1;}
+.popcard p{margin:0 0 8px;color:var(--ink-soft);font-size:13.5px;}
+.popcard a{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--vermilion);text-decoration:none;
+  border-bottom:1.5px solid var(--vermilion);
 }
 .maplegend{
-  display:flex;flex-wrap:wrap;gap:5px 12px;margin:10px 9px 14px;
+  display:flex;flex-wrap:wrap;gap:5px 14px;margin:10px 9px 14px;
   font-family:"Archivo Narrow",sans-serif;font-weight:600;font-size:11px;color:var(--ink-soft);
 }
 .maplegend span{display:inline-flex;align-items:center;gap:5px;}
 .maplegend i{width:10px;height:10px;border-radius:50%;background:var(--ink);display:inline-block;}
 .maplegend i.road{width:16px;height:3px;border-radius:2px;background:var(--gold);}
+.maplegend i.roadoff{width:16px;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--gold) 0 4px,transparent 4px 8px);}
 
 /* ---------- still open / notes ---------- */
 .open{margin:32px 0 0;border-top:3px solid var(--ink);padding-top:14px;}
@@ -311,9 +318,9 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   <header class="masthead">
     <p class="eyebrow">Shiga Kogen · March</p>
     <h1>How's it<br><span class="alt">laid out?</span></h1>
-    <p>Nineteen connected ski areas on one pass, plus a village down the hill. Tap a marker
-    for what's good and what to watch for in each part — the Stay and Transport tabs both
-    build on this.</p>
+    <p>Nineteen connected ski areas on one pass, plus a village down the hill. This is a
+    real map — drag to pan, pinch or use the +/- to zoom, tap a marker for what's good and
+    what to watch for. The Stay and Transport tabs both build on this.</p>
   </header>
 
   <section class="group overview">
@@ -323,62 +330,14 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
       <p>One road in, one road out — it only runs from the south</p>
     </div>
 
-    <div class="terrain-wrap">
-      <div class="stage">
-        <svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#1C3830" flood-opacity="0.16"></feDropShadow>
-            </filter>
-          </defs>
-
-          <!-- Kita-Shiga Kogen — detached area, southwest -->
-          <path d="M40,430 C50,360 100,305 170,300 C222,296 252,326 260,356 C266,382 250,415 220,430 Z" fill="#DCE6DE" stroke="#1C3830" stroke-width="1.5" filter="url(#soft)"></path>
-
-          <!-- West massif — Okushiga Kogen + Yakebitaiyama -->
-          <path d="M130,300 C150,200 210,130 280,120 C340,112 380,150 410,175 C438,198 438,250 425,300 L425,335 L130,335 Z" fill="#DDE6DE" stroke="#1C3830" stroke-width="1.5" filter="url(#soft)"></path>
-
-          <!-- North massif — Higashidateyama/Terakoya + Yokoteyama -->
-          <path d="M410,280 C430,170 490,90 590,80 C670,72 720,110 760,95 C810,76 850,110 860,160 L860,280 Z" fill="#DCE6EA" stroke="#33586B" stroke-width="1.5" filter="url(#soft)"></path>
-
-          <!-- East massif — Sun Valley / Kidoike / Maruike / Giant -->
-          <path d="M470,340 C480,255 545,205 615,200 C685,195 735,225 775,213 C805,204 815,240 805,280 L805,360 L470,360 Z" fill="#F0E1C4" stroke="#8A5A22" stroke-width="1.5" filter="url(#soft)"></path>
-
-          <!-- Ichinose basin — the hub, lower elevation -->
-          <ellipse cx="430" cy="300" rx="150" ry="78" fill="#F9F4E8" stroke="#1C3830" stroke-width="1.5"></ellipse>
-
-          <!-- South foothill — toward Yudanaka / Shibu -->
-          <path d="M250,620 C258,480 320,400 400,388 C470,378 520,405 565,392 C598,382 618,412 618,460 L618,620 Z" fill="#F2DFC6" stroke="#A24E2B" stroke-width="1.5" filter="url(#soft)"></path>
-
-          <!-- contour hints -->
-          <path d="M180,260 C230,210 300,180 360,190" fill="none" stroke="#1C3830" stroke-width="1" opacity=".25"></path>
-          <path d="M460,240 C540,160 640,130 740,140" fill="none" stroke="#33586B" stroke-width="1" opacity=".25"></path>
-          <path d="M520,300 C580,260 660,245 730,255" fill="none" stroke="#8A5A22" stroke-width="1" opacity=".25"></path>
-
-          <!-- road: the one way in and out, south to Ichinose, open section -->
-          <path d="M430,620 L430,420 L430,300 C480,270 540,250 600,235" fill="none" stroke="#D9A22E" stroke-width="6" stroke-linecap="round"></path>
-          <!-- road: continues toward Shibutoge, closed in winter -->
-          <path d="M600,235 C670,215 730,180 780,155" fill="none" stroke="#D9A22E" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 14"></path>
-        </svg>
-
-        <a class="pin" href="#zone-ichinose" style="left:47.8%;top:48.4%;">1</a>
-        <a class="pin" href="#zone-yakebitaiyama" style="left:42.2%;top:37.1%;">2</a>
-        <a class="pin" href="#zone-okushiga" style="left:28.9%;top:27.4%;">3</a>
-        <a class="pin" href="#zone-higashidateyama" style="left:57.8%;top:22.6%;">4</a>
-        <a class="pin" href="#zone-yokoteyama" style="left:87.8%;top:21%;">5</a>
-        <a class="pin" href="#zone-sunvalley" style="left:70%;top:41.1%;">6</a>
-        <a class="pin" href="#zone-kitashiga" style="left:16.7%;top:58.9%;">7</a>
-        <a class="pin" href="#zone-yudanaka" style="left:47.8%;top:75.8%;">8</a>
-        <a class="pin" href="#zone-snowmonkey" style="left:37.8%;top:83.9%;">9</a>
-
-        <span class="roadtag" style="left:47.8%;top:90.3%;">Entrance &amp; exit</span>
-        <span class="roadtag" style="left:84.4%;top:17.7%;">Shibutoge — closed</span>
-      </div>
+    <div class="mapbox">
+      <div id="trip-map"></div>
     </div>
 
     <div class="maplegend">
-      <span><i></i> Tap a number for details</span>
-      <span><i class="road"></i> The only road up, from Yudanaka</span>
+      <span><i></i> Tap a marker for details</span>
+      <span><i class="road"></i> Open — the only way up, from Yudanaka</span>
+      <span><i class="roadoff"></i> Closed mid-Nov–late Apr, toward Kusatsu</span>
     </div>
 
     <div class="row">
@@ -1121,5 +1080,78 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 
 </div><!-- /wrap -->
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  var ZONES = [
+    { id:"zone-ichinose", num:"01", name:"Ichinose", lat:36.7383, lng:138.5132,
+      blurb:"Central hub — most rental shops, restaurants, and lifts radiate from here." },
+    { id:"zone-yakebitaiyama", num:"02", name:"Yakebitaiyama", lat:36.7507, lng:138.5184,
+      blurb:"Base One — Shiga Kogen Prince &amp; Olympic hotels, true ski-in ski-out." },
+    { id:"zone-okushiga", num:"03", name:"Okushiga Kogen", lat:36.7697, lng:138.5146,
+      blurb:"Furthest north, quietest lines, often the best untouched snow." },
+    { id:"zone-higashidateyama", num:"04", name:"Higashidateyama &amp; Terakoya", lat:36.7271, lng:138.5190,
+      blurb:"The largest connected block of runs, including Takamagahara Mammoth." },
+    { id:"zone-yokoteyama", num:"05", name:"Yokoteyama", lat:36.6750, lng:138.5150,
+      blurb:"Easternmost, quietest, right by the pass that's shut all winter." },
+    { id:"zone-sunvalley", num:"06", name:"Sun Valley cluster", lat:36.7151, lng:138.4857,
+      blurb:"Sun Valley · Kidoike · Maruike · Giant — central, good beginner mix." },
+    { id:"zone-kitashiga", num:"07", name:"Kita-Shiga Kogen", lat:36.7793, lng:138.4741,
+      blurb:"Ryuoo &amp; Komaruyama — a separate resort, needs its own transport leg." },
+    { id:"zone-yudanaka", num:"08", name:"Yudanaka &amp; Shibu Onsen", lat:36.7344, lng:138.4306,
+      blurb:"Base Two — Kamei no Yu &amp; Aburaya Tousen, the station, onsen town." },
+    { id:"zone-snowmonkey", num:"09", name:"Snow Monkey Park", lat:36.7328, lng:138.4623,
+      blurb:"Jigokudani Yaen-koen — the Day 4 side trip from Yudanaka." }
+  ];
+
+  // Real Route 292 geometry (routed via OSRM), Yudanaka Station -> Ichinose -> Shibutoge pass.
+  var ROAD_OPEN = [[36.74177,138.41439],[36.74092,138.41502],[36.73904,138.41533],[36.73562,138.4196],[36.73544,138.4174],[36.73465,138.41604],[36.73383,138.41937],[36.72802,138.42962],[36.72955,138.43713],[36.72932,138.44013],[36.72761,138.44312],[36.72562,138.44475],[36.72245,138.44568],[36.7205,138.44602],[36.72068,138.44701],[36.72235,138.45004],[36.7222,138.45175],[36.7231,138.45151],[36.72244,138.45063],[36.72116,138.45156],[36.72259,138.45505],[36.72306,138.45649],[36.72011,138.45227],[36.71788,138.45042],[36.71706,138.45336],[36.71966,138.45497],[36.71936,138.45917],[36.71975,138.46135],[36.72069,138.4679],[36.72283,138.46818],[36.72324,138.46609],[36.72407,138.46709],[36.72162,138.47132],[36.72293,138.46985],[36.72437,138.47092],[36.72294,138.47413],[36.72456,138.47462],[36.71959,138.47816],[36.7173,138.48275],[36.71844,138.48443],[36.71894,138.48695],[36.71774,138.48879],[36.71826,138.49162],[36.71782,138.49279],[36.71739,138.49367],[36.71616,138.49555],[36.71212,138.49995],[36.71397,138.50108],[36.71371,138.50379],[36.71213,138.5062],[36.71593,138.51044],[36.71877,138.51084],[36.71987,138.5128],[36.72104,138.51584],[36.72335,138.51596],[36.7291,138.50944],[36.73045,138.50747],[36.73349,138.50895],[36.73655,138.5097],[36.73754,138.51215],[36.73933,138.51344],[36.74129,138.51502],[36.73774,138.51264]];
+  var ROAD_CLOSED = [[36.73774,138.51264],[36.73691,138.5098],[36.73392,138.50952],[36.73088,138.50737],[36.72914,138.50846],[36.72465,138.5152],[36.72128,138.51603],[36.71989,138.51366],[36.71901,138.51134],[36.71742,138.51071],[36.71221,138.50653],[36.7128,138.50479],[36.71412,138.50134],[36.71253,138.50058],[36.715,138.49656],[36.71738,138.49402],[36.71771,138.49291],[36.71607,138.49372],[36.71414,138.49382],[36.71359,138.49594],[36.71176,138.49445],[36.71086,138.49222],[36.70867,138.48883],[36.70777,138.4893],[36.7071,138.4899],[36.70641,138.48947],[36.7049,138.49096],[36.70143,138.49178],[36.69826,138.49332],[36.69772,138.49225],[36.69652,138.49151],[36.69548,138.49073],[36.69219,138.4921],[36.68772,138.49507],[36.68651,138.49658],[36.68515,138.49761],[36.68286,138.49949],[36.68156,138.49988],[36.68222,138.50153],[36.68159,138.5011],[36.68097,138.50191],[36.68139,138.50298],[36.68008,138.50283],[36.68012,138.50443],[36.67851,138.50753],[36.67594,138.50753],[36.67702,138.50913],[36.67669,138.50988],[36.67378,138.50803],[36.67349,138.5096],[36.67414,138.51307],[36.67345,138.51344],[36.67049,138.5123],[36.67124,138.51439],[36.66938,138.51319],[36.67002,138.51503],[36.66844,138.51401],[36.66809,138.51434],[36.66954,138.51693],[36.6705,138.51792],[36.66909,138.51769],[36.67048,138.51837],[36.6702,138.51878],[36.66936,138.5188],[36.66882,138.51965],[36.66847,138.52175],[36.66763,138.52285],[36.66622,138.52516],[36.66659,138.52641],[36.66584,138.52901],[36.66633,138.53008]];
+
+  function pinIcon(num){
+    return L.divIcon({
+      className: "trip-pin",
+      html: '<span class="pin-badge">' + num + "</span>",
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+      popupAnchor: [0, -14]
+    });
+  }
+
+  function initMap(){
+    var el = document.getElementById("trip-map");
+    if (!el || el._leaflet_id) return;
+
+    var map = L.map("trip-map", { scrollWheelZoom: false }).setView([36.735, 138.495], 12);
+
+    L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+      maxZoom: 17,
+      attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'
+    }).addTo(map);
+
+    L.polyline(ROAD_OPEN, { color: "#D9A22E", weight: 5, opacity: 0.9, lineJoin: "round" }).addTo(map);
+    L.polyline(ROAD_CLOSED, { color: "#D9A22E", weight: 5, opacity: 0.75, dashArray: "1 12", lineJoin: "round" })
+      .addTo(map)
+      .bindPopup('<div class="popcard"><h4>Closed in winter</h4><p>Route 292 past here is shut roughly mid-November to late April, toward Kusatsu (Gunma). In ski season this is a dead end, not a through-route.</p></div>');
+
+    ZONES.forEach(function(z){
+      var html = '<div class="popcard"><span class="num">' + z.num + '</span><h4>' + z.name + '</h4><p>' + z.blurb + '</p><a href="#' + z.id + '">Full details &darr;</a></div>';
+      L.marker([z.lat, z.lng], { icon: pinIcon(z.num) }).addTo(map).bindPopup(html);
+    });
+
+    setTimeout(function(){ map.invalidateSize(); }, 200);
+
+    document.getElementById("tab-overview").addEventListener("change", function(){
+      setTimeout(function(){ map.invalidateSize(); }, 60);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMap);
+  } else {
+    initMap();
+  }
+})();
+</script>
 
 </body></html>
