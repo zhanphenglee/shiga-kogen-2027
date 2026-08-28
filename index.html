@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shiga Kogen — sleep, get there, the plan</title>
+<title>Shiga Kogen — the layout, the stay, the plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo+Narrow:wght@400;600;700&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -29,6 +29,9 @@
 
   --itin-bar:#4B3B5C;
   --itin-tint:#E4DEE8;
+
+  --overview-bar:#1C3830;
+  --overview-tint:#E6E2D4;
 }
 
 *{box-sizing:border-box;}
@@ -41,39 +44,44 @@ body{
 h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-spacing:-.01em;}
 
 /* ---------- tab state (radios, hidden) ---------- */
-#tab-accom,#tab-transport,#tab-itinerary{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
-.page-transport,.page-itinerary{display:none;}
-#tab-transport:checked ~ .page-accom{display:none;}
-#tab-transport:checked ~ .page-transport{display:block;}
-#tab-itinerary:checked ~ .page-accom{display:none;}
-#tab-itinerary:checked ~ .page-itinerary{display:block;}
+#tab-overview,#tab-accom,#tab-transport,#tab-itinerary,#tab-food{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
+.page-overview,.page-accom,.page-transport,.page-itinerary,.page-food{display:none;}
+#tab-overview:checked ~ .page-overview,
+#tab-accom:checked ~ .page-accom,
+#tab-transport:checked ~ .page-transport,
+#tab-itinerary:checked ~ .page-itinerary,
+#tab-food:checked ~ .page-food{display:block;}
 
-/* ---------- pill selector (scrolls with page, sits top right) ---------- */
-.pill-row{display:flex;justify-content:flex-end;padding:18px 0 0;}
+/* ---------- pill nav (single top-level navigation, 5 sections) ---------- */
+.pill-row{padding:18px 0 0;}
 .pill-track{
-  position:relative;display:flex;background:var(--card);
+  position:relative;display:flex;width:100%;background:var(--card);
   border:2px solid var(--ink);border-radius:999px;padding:3px;
 }
 .pill-track label{
   position:relative;z-index:1;flex:1;text-align:center;white-space:nowrap;
-  padding:8px 13px;cursor:pointer;border-radius:999px;
+  padding:8px 10px;cursor:pointer;border-radius:999px;
   font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10px;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
   transition:color .22s ease;
 }
 .pill{
   position:absolute;top:3px;left:3px;bottom:3px;
-  width:calc(33.333% - 2px);border-radius:999px;background:var(--vermilion);
+  width:calc(20% - 2px);border-radius:999px;background:var(--vermilion);
   transition:transform .32s cubic-bezier(.65,0,.35,1);z-index:0;
 }
-#tab-transport:checked ~ .pill-row .pill{transform:translateX(100%);}
-#tab-itinerary:checked ~ .pill-row .pill{transform:translateX(200%);}
+#tab-accom:checked ~ .pill-row .pill{transform:translateX(100%);}
+#tab-transport:checked ~ .pill-row .pill{transform:translateX(200%);}
+#tab-itinerary:checked ~ .pill-row .pill{transform:translateX(300%);}
+#tab-food:checked ~ .pill-row .pill{transform:translateX(400%);}
+#tab-overview:checked ~ .pill-row .pill-track label[for="tab-overview"],
 #tab-accom:checked ~ .pill-row .pill-track label[for="tab-accom"],
 #tab-transport:checked ~ .pill-row .pill-track label[for="tab-transport"],
-#tab-itinerary:checked ~ .pill-row .pill-track label[for="tab-itinerary"]{color:var(--card);}
+#tab-itinerary:checked ~ .pill-row .pill-track label[for="tab-itinerary"],
+#tab-food:checked ~ .pill-row .pill-track label[for="tab-food"]{color:var(--card);}
 
 /* ---------- masthead ---------- */
-.masthead{padding:16px 0 18px;}
+.masthead{padding:20px 0 18px;}
 .masthead .eyebrow{
   font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;
   letter-spacing:.22em;text-transform:uppercase;color:var(--vermilion);margin:0;
@@ -90,9 +98,10 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 .group.train{background:var(--train-tint);border-color:var(--train-bar);}
 .group.car{background:var(--car-tint);border-color:var(--car-bar);}
 .group.itin{background:var(--itin-tint);border-color:var(--itin-bar);}
+.group.overview{background:var(--overview-tint);}
 
 .gbar{padding:11px 13px 10px;color:var(--card);}
-.group.slopes .gbar,.group.bus .gbar{background:var(--slope-bar);}
+.group.slopes .gbar,.group.bus .gbar,.group.overview .gbar{background:var(--slope-bar);}
 .group.village .gbar{background:var(--village-bar);}
 .group.train .gbar{background:var(--train-bar);}
 .group.car .gbar{background:var(--car-bar);}
@@ -107,15 +116,17 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 .row{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:11px 9px 0;align-items:stretch;}
 .row.single{grid-template-columns:1fr;}
 
-/* ---------- cards (hotels + route options) ---------- */
+/* ---------- cards (hotels + route options + zones) ---------- */
 .card{
   background:var(--card);border:1.5px solid var(--ink);
   display:flex;flex-direction:column;min-width:0;padding:0 10px 11px;
+  scroll-margin-top:20px;
 }
 .group.village .card{border-color:var(--village-bar);}
 .group.train .card{border-color:var(--train-bar);}
 .group.car .card{border-color:var(--car-bar);}
 .group.itin .card{border-color:var(--itin-bar);}
+.card:target{outline:3px solid var(--gold);outline-offset:2px;}
 .opthead{
   display:flex;align-items:center;justify-content:space-between;gap:5px;
   margin:0 -10px 9px;padding:6px 9px 5px;border-bottom:1.5px solid var(--ink);
@@ -148,7 +159,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);
 }
 
-.blk{margin-bottom:10px;}
+.blk{margin-bottom:10px;margin-top:9px;}
 .blk .lab{
   display:block;font-family:"Archivo Narrow",sans-serif;font-weight:700;
   font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px;
@@ -207,6 +218,35 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   border:1px solid var(--itin-bar);color:var(--itin-bar);
 }
 
+/* ---------- interactive layout map (Overview) ---------- */
+.terrain-wrap{margin:11px 9px 8px;border:1.5px solid var(--ink);background:var(--card);}
+.terrain-wrap .stage{position:relative;width:100%;aspect-ratio:900/620;overflow:hidden;}
+.terrain-wrap svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.pin{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;
+  width:9.5%;max-width:30px;aspect-ratio:1;border-radius:50%;
+  background:var(--ink);color:var(--card);
+  font-family:"Archivo Black",sans-serif;font-size:clamp(9px,2.6vw,12px);
+  border:2px solid var(--card);box-shadow:0 2px 4px rgba(0,0,0,.28);
+  text-decoration:none;transition:transform .18s ease,background .18s ease;
+}
+.pin:hover,.pin:focus-visible{transform:translate(-50%,-50%) scale(1.2);background:var(--vermilion);}
+.roadtag{
+  position:absolute;transform:translate(-50%,-50%);
+  background:var(--paper);border:1.5px dashed var(--ink-soft);border-radius:5px;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;
+  font-size:clamp(7.5px,1.9vw,9.5px);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);padding:3px 6px;white-space:nowrap;text-align:center;
+}
+.maplegend{
+  display:flex;flex-wrap:wrap;gap:5px 12px;margin:10px 9px 14px;
+  font-family:"Archivo Narrow",sans-serif;font-weight:600;font-size:11px;color:var(--ink-soft);
+}
+.maplegend span{display:inline-flex;align-items:center;gap:5px;}
+.maplegend i{width:10px;height:10px;border-radius:50%;background:var(--ink);display:inline-block;}
+.maplegend i.road{width:16px;height:3px;border-radius:2px;background:var(--gold);}
+
 /* ---------- still open / notes ---------- */
 .open{margin:32px 0 0;border-top:3px solid var(--ink);padding-top:14px;}
 .open h2{font-size:15px;text-transform:uppercase;margin-bottom:10px;}
@@ -216,6 +256,10 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 .open p{margin:0;color:var(--ink-soft);}
 .closer{margin:26px 0 0;border-top:2px solid var(--ink);padding-top:12px;font-size:15px;color:var(--ink-soft);}
 .closer b{font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--vermilion);display:block;margin-bottom:3px;}
+
+.sitefoot{margin:30px 0 0;font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:center;}
+.sitefoot a{color:var(--ink-soft);text-decoration:none;border-bottom:1.5px solid transparent;}
+.sitefoot a:hover{color:var(--vermilion);border-bottom-color:var(--vermilion);}
 
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 
@@ -230,50 +274,309 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   .blk li{font-size:16px;}
   .carstrip{margin:16px 14px 18px;padding:13px 16px;}
   .carstrip dl{grid-template-columns:1fr 1fr;gap:20px;}
-  .pill-row{padding-top:24px;}
-  .pill-track label{padding:9px 20px;font-size:11px;}
+  .pill-track label{padding:9px 14px;font-size:11px;}
   .timeline{margin:16px 14px 18px;}
+  .terrain-wrap{margin:16px 14px 12px;}
 }
 @media (max-width:420px){
-  .pill-track label{padding:7px 8px;font-size:8.5px;letter-spacing:.06em;}
+  .pill-track label{padding:6px 3px;font-size:7.5px;letter-spacing:.02em;}
 }
-
-/* ---------- site links (rest of the trip site) ---------- */
-.sitelinks{
-  display:flex;flex-wrap:wrap;gap:4px 16px;padding:14px 0 0;
-  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10.5px;
-  letter-spacing:.14em;text-transform:uppercase;
-}
-.sitelinks a{color:var(--ink-soft);text-decoration:none;border-bottom:1.5px solid transparent;}
-.sitelinks a:hover{color:var(--vermilion);border-bottom-color:var(--vermilion);}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<nav class="sitelinks">
-  <a href="./packing-list/">Packing List</a>
-  <a href="./budget/">Budget</a>
-  <a href="./participants/">Who's Coming</a>
-  <a href="./resources/">Resources</a>
-  <a href="https://github.com/zhanphenglee/shiga-kogen-2027">Edit on GitHub</a>
-</nav>
-
-<input type="radio" name="page" id="tab-accom" checked="">
+<input type="radio" name="page" id="tab-overview" checked="">
+<input type="radio" name="page" id="tab-accom">
 <input type="radio" name="page" id="tab-transport">
 <input type="radio" name="page" id="tab-itinerary">
+<input type="radio" name="page" id="tab-food">
 
 <nav class="pill-row">
   <div class="pill-track">
     <span class="pill"></span>
+    <label for="tab-overview">Overview</label>
     <label for="tab-accom">Stay</label>
     <label for="tab-transport">Transport</label>
     <label for="tab-itinerary">Itinerary</label>
+    <label for="tab-food">Food</label>
   </div>
 </nav>
 
   <!-- ======================================================= -->
-  <!-- PAGE ONE — ACCOMMODATION                                 -->
+  <!-- PAGE — OVERVIEW                                          -->
+  <!-- ======================================================= -->
+  <div class="page-overview">
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · March</p>
+    <h1>How's it<br><span class="alt">laid out?</span></h1>
+    <p>Nineteen connected ski areas on one pass, plus a village down the hill. Tap a marker
+    for what's good and what to watch for in each part — the Stay and Transport tabs both
+    build on this.</p>
+  </header>
+
+  <section class="group overview">
+    <div class="gbar">
+      <span class="kicker">The mountain</span>
+      <h2>Where everything sits</h2>
+      <p>One road in, one road out — it only runs from the south</p>
+    </div>
+
+    <div class="terrain-wrap">
+      <div class="stage">
+        <svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#1C3830" flood-opacity="0.16"></feDropShadow>
+            </filter>
+          </defs>
+
+          <!-- Kita-Shiga Kogen — detached area, southwest -->
+          <path d="M40,430 C50,360 100,305 170,300 C222,296 252,326 260,356 C266,382 250,415 220,430 Z" fill="#DCE6DE" stroke="#1C3830" stroke-width="1.5" filter="url(#soft)"></path>
+
+          <!-- West massif — Okushiga Kogen + Yakebitaiyama -->
+          <path d="M130,300 C150,200 210,130 280,120 C340,112 380,150 410,175 C438,198 438,250 425,300 L425,335 L130,335 Z" fill="#DDE6DE" stroke="#1C3830" stroke-width="1.5" filter="url(#soft)"></path>
+
+          <!-- North massif — Higashidateyama/Terakoya + Yokoteyama -->
+          <path d="M410,280 C430,170 490,90 590,80 C670,72 720,110 760,95 C810,76 850,110 860,160 L860,280 Z" fill="#DCE6EA" stroke="#33586B" stroke-width="1.5" filter="url(#soft)"></path>
+
+          <!-- East massif — Sun Valley / Kidoike / Maruike / Giant -->
+          <path d="M470,340 C480,255 545,205 615,200 C685,195 735,225 775,213 C805,204 815,240 805,280 L805,360 L470,360 Z" fill="#F0E1C4" stroke="#8A5A22" stroke-width="1.5" filter="url(#soft)"></path>
+
+          <!-- Ichinose basin — the hub, lower elevation -->
+          <ellipse cx="430" cy="300" rx="150" ry="78" fill="#F9F4E8" stroke="#1C3830" stroke-width="1.5"></ellipse>
+
+          <!-- South foothill — toward Yudanaka / Shibu -->
+          <path d="M250,620 C258,480 320,400 400,388 C470,378 520,405 565,392 C598,382 618,412 618,460 L618,620 Z" fill="#F2DFC6" stroke="#A24E2B" stroke-width="1.5" filter="url(#soft)"></path>
+
+          <!-- contour hints -->
+          <path d="M180,260 C230,210 300,180 360,190" fill="none" stroke="#1C3830" stroke-width="1" opacity=".25"></path>
+          <path d="M460,240 C540,160 640,130 740,140" fill="none" stroke="#33586B" stroke-width="1" opacity=".25"></path>
+          <path d="M520,300 C580,260 660,245 730,255" fill="none" stroke="#8A5A22" stroke-width="1" opacity=".25"></path>
+
+          <!-- road: the one way in and out, south to Ichinose, open section -->
+          <path d="M430,620 L430,420 L430,300 C480,270 540,250 600,235" fill="none" stroke="#D9A22E" stroke-width="6" stroke-linecap="round"></path>
+          <!-- road: continues toward Shibutoge, closed in winter -->
+          <path d="M600,235 C670,215 730,180 780,155" fill="none" stroke="#D9A22E" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 14"></path>
+        </svg>
+
+        <a class="pin" href="#zone-ichinose" style="left:47.8%;top:48.4%;">1</a>
+        <a class="pin" href="#zone-yakebitaiyama" style="left:42.2%;top:37.1%;">2</a>
+        <a class="pin" href="#zone-okushiga" style="left:28.9%;top:27.4%;">3</a>
+        <a class="pin" href="#zone-higashidateyama" style="left:57.8%;top:22.6%;">4</a>
+        <a class="pin" href="#zone-yokoteyama" style="left:87.8%;top:21%;">5</a>
+        <a class="pin" href="#zone-sunvalley" style="left:70%;top:41.1%;">6</a>
+        <a class="pin" href="#zone-kitashiga" style="left:16.7%;top:58.9%;">7</a>
+        <a class="pin" href="#zone-yudanaka" style="left:47.8%;top:75.8%;">8</a>
+        <a class="pin" href="#zone-snowmonkey" style="left:37.8%;top:83.9%;">9</a>
+
+        <span class="roadtag" style="left:47.8%;top:90.3%;">Entrance &amp; exit</span>
+        <span class="roadtag" style="left:84.4%;top:17.7%;">Shibutoge — closed</span>
+      </div>
+    </div>
+
+    <div class="maplegend">
+      <span><i></i> Tap a number for details</span>
+      <span><i class="road"></i> The only road up, from Yudanaka</span>
+    </div>
+
+    <div class="row">
+      <article class="card" id="zone-ichinose">
+        <div class="opthead"><span class="num">01</span><span class="chip in">Hub</span></div>
+        <h3>Ichinose</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Central hub — most rental shops, restaurants, and the gondola/lift network radiate from here</li>
+            <li>Where the direct express bus from Nagano terminates (Yamanoeki)</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Busy at first-lift and last-lift</li>
+            <li>Neither hotel base is actually here — you'll pass through, not stay</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="zone-yakebitaiyama">
+        <div class="opthead"><span class="num">02</span><span class="chip in">Base one</span></div>
+        <h3>Yakebitaiyama</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>This is where the Prince and Olympic hotels sit — true ski-in, ski-out</li>
+            <li>Short hop to Ichinose for anything you need</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Quiet at night unless you shuttle out</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="row">
+      <article class="card" id="zone-okushiga">
+        <div class="opthead"><span class="num">03</span><span class="chip out">Furthest north</span></div>
+        <h3>Okushiga Kogen</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Quietest lift lines, often the best untouched snow</li>
+            <li>Its own gondola, worth a full day</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Furthest from Ichinose — mind the last shuttle back</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="zone-higashidateyama">
+        <div class="opthead"><span class="num">04</span><span class="chip in">Big terrain</span></div>
+        <h3>Higashidateyama &amp; Terakoya</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Includes Takamagahara Mammoth — the largest connected block of runs</li>
+            <li>Good mix of levels, easy to burn a whole day here</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Exposed and windy higher up on a bad-weather day</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="row">
+      <article class="card" id="zone-yokoteyama">
+        <div class="opthead"><span class="num">05</span><span class="chip warn">Near closed pass</span></div>
+        <h3>Yokoteyama</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Easternmost lift zone, quieter, closest to the Shibutoge viewpoint</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Sits right by the gate that's shut all winter — it's a dead end, not a through-route to Gunma</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="zone-sunvalley">
+        <div class="opthead"><span class="num">06</span><span class="chip in">Central cluster</span></div>
+        <h3>Sun Valley · Kidoike · Maruike · Giant</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Central-east cluster, solid beginner/intermediate mix</li>
+            <li>A few frozen lakes worth the view mid-run</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Several named areas under one pass — easy to lose track of where you are</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="row">
+      <article class="card" id="zone-kitashiga">
+        <div class="opthead"><span class="num">07</span><span class="chip out">Separate area</span></div>
+        <h3>Kita-Shiga Kogen</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Ryuoo Ski Park and Komaruyama — a genuinely different resort, worth a day for a change of scenery</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Not connected to the main lift network — needs its own transport leg</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="zone-yudanaka">
+        <div class="opthead"><span class="num">08</span><span class="chip in">South gateway</span></div>
+        <h3>Yudanaka &amp; Shibu Onsen</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Base Two (Kamei no Yu, Aburaya Tousen) — the train station, onsen town, liveliest nights</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Not ski-in, ski-out — budget the shuttle or drive up every morning</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="row single">
+      <article class="card" id="zone-snowmonkey">
+        <div class="opthead"><span class="num">09</span><span class="chip warn">Side trip</span></div>
+        <h3>Jigokudani Yaen-koen (Snow Monkey Park)</h3>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Wild snow monkeys in hot springs, a short detour from Yudanaka — this is the Day 4 side trip on the Itinerary tab</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Watch for</span>
+          <ul>
+            <li>Gets busy midday, and there's a walk in from the bus stop</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>Still open</h2>
+    <div>
+      <b>One road in, one road out</b>
+      <p>Route 292 (the Shiga Kusatsu Kogen Route) is the only way up, via Yudanaka. It's
+      closed past Shibutoge — the section toward Kusatsu, Gunma — roughly mid-November
+      to late April, so for the whole trip it's a dead end, not a through-route. Every
+      option on the Transport tab uses this same southern road; worth reconfirming the
+      exact closure dates closer to March.</p>
+    </div>
+    <div>
+      <b>Which zones we actually want to ride</b>
+      <p>Nineteen areas is a lot for a handful of days — worth agreeing on 2–3 priority
+      zones per day rather than trying to see everything.</p>
+    </div>
+  </section>
+
+  <div class="closer">
+    <b>Next</b>
+    Use this to make sense of the Stay tab, then Transport for how we actually get to it.
+  </div>
+
+  </div><!-- /page-overview -->
+
+  <!-- ======================================================= -->
+  <!-- PAGE — ACCOMMODATION                                     -->
   <!-- ======================================================= -->
   <div class="page-accom">
 
@@ -462,7 +765,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   </div><!-- /page-accom -->
 
   <!-- ======================================================= -->
-  <!-- PAGE TWO — TRANSPORT                                     -->
+  <!-- PAGE — TRANSPORT                                         -->
   <!-- ======================================================= -->
   <div class="page-transport">
 
@@ -655,7 +958,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   </div><!-- /page-transport -->
 
   <!-- ======================================================= -->
-  <!-- PAGE THREE — ITINERARY                                   -->
+  <!-- PAGE — ITINERARY                                         -->
   <!-- ======================================================= -->
   <div class="page-itinerary">
 
@@ -746,6 +1049,75 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   </div>
 
   </div><!-- /page-itinerary -->
+
+  <!-- ======================================================= -->
+  <!-- PAGE — FOOD                                              -->
+  <!-- ======================================================= -->
+  <div class="page-food">
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · March</p>
+    <h1>Where do<br>we <span class="alt">eat?</span></h1>
+    <p>Nobody's scouted this yet. Categories below, ready for real picks as anyone finds them —
+    see the note at the bottom for how to add them.</p>
+  </header>
+
+  <section class="group slopes">
+    <div class="gbar">
+      <span class="kicker">On the mountain</span>
+      <h2>Lodges &amp; kiosks</h2>
+      <p>Ichinose, Yakebitaiyama, Okushiga — lunch without leaving the slopes</p>
+    </div>
+    <div class="open" style="margin-top:0;border-top:none;padding-top:0;">
+      <div>
+        <b>Add a pick</b>
+        <p>e.g. a lodge cafeteria near Ichinose, or a kiosk worth stopping at between runs.</p>
+      </div>
+      <div>
+        <b>Add a pick</b>
+        <p>e.g. anywhere with a view worth the extra five minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="group village">
+    <div class="gbar">
+      <span class="kicker">Off the mountain</span>
+      <h2>Yudanaka &amp; Shibu Onsen</h2>
+      <p>Dinner and drinks once the lifts close</p>
+    </div>
+    <div class="open" style="margin-top:0;border-top:none;padding-top:0;">
+      <div>
+        <b>Add a pick</b>
+        <p>e.g. an izakaya near the station, or somewhere for good soba.</p>
+      </div>
+      <div>
+        <b>Add a pick</b>
+        <p>e.g. where to go after the onsen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>Still open</h2>
+    <div>
+      <b>Nothing confirmed yet</b>
+      <p>This whole tab is a placeholder — first real recommendations win the slots above.</p>
+    </div>
+    <div>
+      <b>Dietary needs</b>
+      <p>Worth flagging here early — vegetarian, allergies, etc. — so we're not figuring it out at the table.</p>
+    </div>
+  </section>
+
+  <div class="closer">
+    <b>Next</b>
+    If you've been to Shiga Kogen before, or find a good spot researching, add it here.
+  </div>
+
+  </div><!-- /page-food -->
+
+  <p class="sitefoot"><a href="https://github.com/zhanphenglee/shiga-kogen-2027">Edit this page on GitHub</a></p>
 
 </div><!-- /wrap -->
 
