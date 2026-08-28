@@ -338,6 +338,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
       <span><i></i> Tap a marker for details</span>
       <span><i class="road"></i> Open — the only way up, from Yudanaka</span>
       <span><i class="roadoff"></i> Closed mid-Nov–late Apr, toward Kusatsu</span>
+      <span>Coloured lines are real runs &amp; lifts (blue easier, red/black harder)</span>
     </div>
 
     <div class="row">
@@ -1122,11 +1123,18 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
     var el = document.getElementById("trip-map");
     if (!el || el._leaflet_id) return;
 
-    var map = L.map("trip-map", { scrollWheelZoom: false }).setView([36.735, 138.495], 12);
+    var map = L.map("trip-map", { scrollWheelZoom: false }).setView([36.735, 138.495], 13);
 
-    L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-      maxZoom: 17,
-      attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.tileLayer("https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      maxNativeZoom: 16,
+      opacity: 0.95,
+      attribution: 'Piste data: &copy; <a href="https://www.opensnowmap.org">OpenSnowMap.org</a> (CC-BY-SA)'
     }).addTo(map);
 
     L.polyline(ROAD_OPEN, { color: "#D9A22E", weight: 5, opacity: 0.9, lineJoin: "round" }).addTo(map);
