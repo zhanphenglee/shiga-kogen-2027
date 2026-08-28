@@ -1,68 +1,753 @@
----
-layout: default
-omit_title: true
----
-<div class="hero">
-  <h1>🎿 {{ site.trip.destination }}</h1>
-  <p class="meta">
-    {{ site.trip.season }} season &middot;
-    {{ site.trip.start_date }} &ndash; {{ site.trip.end_date }} &middot;
-    {{ site.trip.pax }} of us
-  </p>
-  <p>Welcome to the trip site! Everything about the trip lives here — itinerary, where we're
-  staying, what to pack, and how we're splitting costs. Anyone in the group can edit this
-  site — see the "How to contribute" note at the bottom of the page.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
 
-<div class="card-grid">
-  <a class="card" href="{{ '/itinerary/' | relative_url }}">
-    <span class="emoji">🗓️</span>
-    <h3>Itinerary</h3>
-    <p>Day-by-day plan, flights, and travel between spots.</p>
-  </a>
-  <a class="card" href="{{ '/accommodation/' | relative_url }}">
-    <span class="emoji">🏨</span>
-    <h3>Accommodation</h3>
-    <p>Where we're staying, booking status, room assignments.</p>
-  </a>
-  <a class="card" href="{{ '/packing-list/' | relative_url }}">
-    <span class="emoji">🧳</span>
-    <h3>Packing List</h3>
-    <p>What to bring, what's shared gear vs. personal.</p>
-  </a>
-  <a class="card" href="{{ '/budget/' | relative_url }}">
-    <span class="emoji">💰</span>
-    <h3>Budget</h3>
-    <p>Estimated costs and how we're splitting the bill.</p>
-  </a>
-  <a class="card" href="{{ '/participants/' | relative_url }}">
-    <span class="emoji">👥</span>
-    <h3>Who's Coming</h3>
-    <p>The full squad, ski levels, and contact info.</p>
-  </a>
-  <a class="card" href="{{ '/resources/' | relative_url }}">
-    <span class="emoji">📎</span>
-    <h3>Resources</h3>
-    <p>Lift passes, weather, useful links, and apps.</p>
-  </a>
-</div>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shiga Kogen — sleep, get there, the plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo+Narrow:wght@400;600;700&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFE6D2;
+  --card:#F9F4E8;
+  --ink:#1C3830;
+  --ink-soft:#4A6259;
+  --vermilion:#C8502A;
+  --gold:#D9A22E;
 
-## About Shiga Kogen
+  --slope-bar:#1C3830;
+  --slope-tint:#DDE6DE;
+  --village-bar:#A24E2B;
+  --village-tint:#F2DFC6;
 
-Shiga Kogen is Japan's largest ski resort area, in Nagano Prefecture — 19 interconnected
-ski areas on one lift pass, known for reliable powder and a much quieter vibe than Hakuba
-or Niseko. It was an Olympic venue in 1998 (Nagano Games).
+  --bus-bar:#1C3830;
+  --bus-tint:#DDE6DE;
+  --train-bar:#33586B;
+  --train-tint:#DCE6EA;
+  --car-bar:#8A5A22;
+  --car-tint:#F0E1C4;
 
-*(Fill in more details, trip dates, and photos as planning firms up!)*
+  --itin-bar:#4B3B5C;
+  --itin-tint:#E4DEE8;
+}
 
-## How to contribute
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Newsreader",Georgia,serif;line-height:1.4;
+}
+.wrap{max-width:780px;margin:0 auto;padding:0 14px 56px;}
+h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-spacing:-.01em;}
 
-This whole site is just Markdown files in a GitHub repo — no coding needed to add or
-change content:
+/* ---------- tab state (radios, hidden) ---------- */
+#tab-accom,#tab-transport,#tab-itinerary{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
+.page-transport,.page-itinerary{display:none;}
+#tab-transport:checked ~ .page-accom{display:none;}
+#tab-transport:checked ~ .page-transport{display:block;}
+#tab-itinerary:checked ~ .page-accom{display:none;}
+#tab-itinerary:checked ~ .page-itinerary{display:block;}
 
-1. Go to the [repo on GitHub](https://github.com/{{ site.github_username | default: "zhanphenglee" }}/shiga-kogen-2027).
-2. Open the page you want to edit (e.g. `itinerary.md`) and click the ✏️ pencil icon.
-3. Make your change and click **"Propose changes"**, then **"Create pull request"**.
-4. The site rebuilds automatically once the change is merged.
+/* ---------- pill selector (scrolls with page, sits top right) ---------- */
+.pill-row{display:flex;justify-content:flex-end;padding:18px 0 0;}
+.pill-track{
+  position:relative;display:flex;background:var(--card);
+  border:2px solid var(--ink);border-radius:999px;padding:3px;
+}
+.pill-track label{
+  position:relative;z-index:1;flex:1;text-align:center;white-space:nowrap;
+  padding:8px 13px;cursor:pointer;border-radius:999px;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+  transition:color .22s ease;
+}
+.pill{
+  position:absolute;top:3px;left:3px;bottom:3px;
+  width:calc(33.333% - 2px);border-radius:999px;background:var(--vermilion);
+  transition:transform .32s cubic-bezier(.65,0,.35,1);z-index:0;
+}
+#tab-transport:checked ~ .pill-row .pill{transform:translateX(100%);}
+#tab-itinerary:checked ~ .pill-row .pill{transform:translateX(200%);}
+#tab-accom:checked ~ .pill-row .pill-track label[for="tab-accom"],
+#tab-transport:checked ~ .pill-row .pill-track label[for="tab-transport"],
+#tab-itinerary:checked ~ .pill-row .pill-track label[for="tab-itinerary"]{color:var(--card);}
 
-See [CONTRIBUTING.md](https://github.com/{{ site.github_username | default: "zhanphenglee" }}/shiga-kogen-2027/blob/main/CONTRIBUTING.md) in the repo for the full walkthrough with screenshots-in-words.
+/* ---------- masthead ---------- */
+.masthead{padding:16px 0 18px;}
+.masthead .eyebrow{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--vermilion);margin:0;
+}
+.masthead h1{font-size:clamp(30px,9vw,58px);line-height:.92;text-transform:uppercase;margin:8px 0 0;}
+.masthead h1 .alt{color:var(--vermilion);}
+.masthead p{margin:10px 0 0;font-size:16px;color:var(--ink-soft);}
+
+/* ---------- location / route groups ---------- */
+.group{margin:0 0 26px;border:2px solid var(--ink);}
+.group.slopes{background:var(--slope-tint);}
+.group.village{background:var(--village-tint);border-color:var(--village-bar);}
+.group.bus{background:var(--bus-tint);}
+.group.train{background:var(--train-tint);border-color:var(--train-bar);}
+.group.car{background:var(--car-tint);border-color:var(--car-bar);}
+.group.itin{background:var(--itin-tint);border-color:var(--itin-bar);}
+
+.gbar{padding:11px 13px 10px;color:var(--card);}
+.group.slopes .gbar,.group.bus .gbar{background:var(--slope-bar);}
+.group.village .gbar{background:var(--village-bar);}
+.group.train .gbar{background:var(--train-bar);}
+.group.car .gbar{background:var(--car-bar);}
+.group.itin .gbar{background:var(--itin-bar);}
+.gbar .kicker{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10px;
+  letter-spacing:.2em;text-transform:uppercase;opacity:.75;display:block;
+}
+.gbar h2{font-size:clamp(19px,5.4vw,26px);text-transform:uppercase;line-height:1.02;margin-top:3px;}
+.gbar p{margin:5px 0 0;font-size:14px;font-style:italic;opacity:.85;}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:11px 9px 0;align-items:stretch;}
+.row.single{grid-template-columns:1fr;}
+
+/* ---------- cards (hotels + route options) ---------- */
+.card{
+  background:var(--card);border:1.5px solid var(--ink);
+  display:flex;flex-direction:column;min-width:0;padding:0 10px 11px;
+}
+.group.village .card{border-color:var(--village-bar);}
+.group.train .card{border-color:var(--train-bar);}
+.group.car .card{border-color:var(--car-bar);}
+.group.itin .card{border-color:var(--itin-bar);}
+.opthead{
+  display:flex;align-items:center;justify-content:space-between;gap:5px;
+  margin:0 -10px 9px;padding:6px 9px 5px;border-bottom:1.5px solid var(--ink);
+}
+.group.village .opthead{border-bottom-color:var(--village-bar);}
+.group.train .opthead{border-bottom-color:var(--train-bar);}
+.group.car .opthead{border-bottom-color:var(--car-bar);}
+.group.itin .opthead{border-bottom-color:var(--itin-bar);}
+.opthead .num{font-family:"Archivo Black",sans-serif;font-size:13px;color:var(--gold);}
+.chip{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;padding:3px 6px;white-space:nowrap;
+}
+.chip.in{background:var(--ink);color:var(--card);}
+.chip.out{border:1.5px solid var(--ink-soft);color:var(--ink-soft);}
+.chip.warn{background:var(--vermilion);color:var(--card);}
+
+.card h3{font-size:17px;line-height:1.08;text-transform:uppercase;}
+.price{margin:9px 0 10px;padding:8px 0;border-top:1px solid rgba(28,56,48,.2);border-bottom:1px solid rgba(28,56,48,.2);}
+.price .big{font-family:"Archivo Black",sans-serif;font-size:21px;line-height:1;display:block;}
+.price .pp{
+  display:block;margin-top:4px;font-family:"Archivo Narrow",sans-serif;font-weight:600;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
+}
+.stats{display:flex;gap:10px;margin:9px 0 10px;padding:8px 0;border-top:1px solid rgba(28,56,48,.2);border-bottom:1px solid rgba(28,56,48,.2);}
+.stats .stat{flex:1;min-width:0;}
+.stats .stat .big{font-family:"Archivo Black",sans-serif;font-size:19px;line-height:1;display:block;}
+.stats .stat .pp{
+  display:block;margin-top:3px;font-family:"Archivo Narrow",sans-serif;font-weight:600;
+  font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);
+}
+
+.blk{margin-bottom:10px;}
+.blk .lab{
+  display:block;font-family:"Archivo Narrow",sans-serif;font-weight:700;
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px;
+}
+.blk.plus .lab{color:var(--ink);}
+.blk.minus .lab{color:var(--vermilion);}
+.blk ul{margin:0;padding:0;list-style:none;}
+.blk li{position:relative;padding-left:14px;margin-bottom:5px;font-size:14.5px;line-height:1.32;overflow-wrap:break-word;}
+.blk li:last-child{margin-bottom:0;}
+.blk li::before{position:absolute;left:0;top:0;font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:13px;}
+.blk.plus li::before{content:"+";color:var(--ink);}
+.blk.minus li::before{content:"–";color:var(--vermilion);}
+
+.card .link{
+  margin-top:auto;padding-top:10px;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.card .link a{color:var(--vermilion);text-decoration:none;border-bottom:1.5px solid var(--vermilion);padding-bottom:1px;}
+.card .link a:hover{background:var(--vermilion);color:var(--card);}
+
+/* ---------- car strip / note strip ---------- */
+.carstrip{margin:11px 9px 12px;border:1.5px dashed var(--ink-soft);background:rgba(249,244,232,.55);padding:10px 11px;}
+.group.village .carstrip{border-color:var(--village-bar);}
+.group.train .carstrip{border-color:var(--train-bar);}
+.group.car .carstrip{border-color:var(--car-bar);}
+.group.itin .carstrip{border-color:var(--itin-bar);}
+.carstrip .head{
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;
+}
+.carstrip .head svg{width:16px;height:16px;flex:none;}
+.carstrip dl{margin:0;display:grid;grid-template-columns:1fr;gap:8px;}
+.carstrip dt{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--vermilion);
+  display:inline-flex;align-items:center;gap:4px;margin-bottom:2px;
+}
+.carstrip dt svg{width:13px;height:13px;flex:none;}
+.carstrip dt.no{color:var(--ink-soft);}
+.carstrip dd{margin:0;font-size:14.5px;line-height:1.35;}
+
+/* ---------- itinerary timeline ---------- */
+.timeline{margin:11px 9px 14px;border-top:1.5px solid var(--itin-bar);}
+.day{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:13px 4px;border-bottom:1px solid rgba(75,59,92,.25);}
+.day .d-num{font-family:"Archivo Black",sans-serif;font-size:19px;color:var(--gold);line-height:1.1;}
+.day .d-body h4{
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;margin:0 0 4px;
+}
+.day .d-body p{margin:0;font-size:14.5px;color:var(--ink-soft);}
+.day .d-tag{
+  display:inline-block;margin-top:7px;font-family:"Archivo Narrow",sans-serif;font-weight:700;
+  font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;
+  border:1px solid var(--itin-bar);color:var(--itin-bar);
+}
+
+/* ---------- still open / notes ---------- */
+.open{margin:32px 0 0;border-top:3px solid var(--ink);padding-top:14px;}
+.open h2{font-size:15px;text-transform:uppercase;margin-bottom:10px;}
+.open div{padding:9px 0;border-bottom:1px solid rgba(28,56,48,.18);font-size:15px;}
+.open div:last-child{border-bottom:0;}
+.open b{font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:2px;}
+.open p{margin:0;color:var(--ink-soft);}
+.closer{margin:26px 0 0;border-top:2px solid var(--ink);padding-top:12px;font-size:15px;color:var(--ink-soft);}
+.closer b{font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--vermilion);display:block;margin-bottom:3px;}
+
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+
+@media (min-width:620px){
+  .wrap{padding:0 24px 72px;}
+  .row{gap:16px;padding:16px 14px 0;}
+  .gbar{padding:15px 18px 14px;}
+  .card{padding:0 15px 16px;}
+  .opthead{margin:0 -15px 12px;padding:8px 13px 7px;}
+  .card h3{font-size:20px;}
+  .price .big,.stats .stat .big{font-size:25px;}
+  .blk li{font-size:16px;}
+  .carstrip{margin:16px 14px 18px;padding:13px 16px;}
+  .carstrip dl{grid-template-columns:1fr 1fr;gap:20px;}
+  .pill-row{padding-top:24px;}
+  .pill-track label{padding:9px 20px;font-size:11px;}
+  .timeline{margin:16px 14px 18px;}
+}
+@media (max-width:420px){
+  .pill-track label{padding:7px 8px;font-size:8.5px;letter-spacing:.06em;}
+}
+
+/* ---------- site links (rest of the trip site) ---------- */
+.sitelinks{
+  display:flex;flex-wrap:wrap;gap:4px 16px;padding:14px 0 0;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.sitelinks a{color:var(--ink-soft);text-decoration:none;border-bottom:1.5px solid transparent;}
+.sitelinks a:hover{color:var(--vermilion);border-bottom-color:var(--vermilion);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="sitelinks">
+  <a href="./packing-list/">Packing List</a>
+  <a href="./budget/">Budget</a>
+  <a href="./participants/">Who's Coming</a>
+  <a href="./resources/">Resources</a>
+  <a href="https://github.com/zhanphenglee/shiga-kogen-2027">Edit on GitHub</a>
+</nav>
+
+<input type="radio" name="page" id="tab-accom" checked="">
+<input type="radio" name="page" id="tab-transport">
+<input type="radio" name="page" id="tab-itinerary">
+
+<nav class="pill-row">
+  <div class="pill-track">
+    <span class="pill"></span>
+    <label for="tab-accom">Stay</label>
+    <label for="tab-transport">Transport</label>
+    <label for="tab-itinerary">Itinerary</label>
+  </div>
+</nav>
+
+  <!-- ======================================================= -->
+  <!-- PAGE ONE — ACCOMMODATION                                 -->
+  <!-- ======================================================= -->
+  <div class="page-accom">
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · March</p>
+    <h1>Where do<br>we <span class="alt">sleep?</span></h1>
+    <p>Two bases, four hotels. All four include breakfast and dinner, all four are two per room. Pick one.</p>
+  </header>
+
+  <!-- ============ BASE ONE ============ -->
+  <section class="group slopes">
+    <div class="gbar">
+      <span class="kicker">Base one</span>
+      <h2>On the slopes</h2>
+      <p>Ski in, ski out · quiet · focused on the riding</p>
+    </div>
+
+    <div class="row">
+      <article class="card">
+        <div class="opthead"><span class="num">01</span><span class="chip in">Ski in, ski out</span></div>
+        <h3>Shiga Kogen Prince</h3>
+        <div class="price">
+          <span class="big">S$1,564</span>
+          <span class="pp">per room · S$782 each</span>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Cheapest of the four by a wide margin</li>
+            <li>Upper centre of the map, easy to reach the rest of the mountain</li>
+            <li>Train and bus straight from Narita</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>Old hotel</li>
+            <li>Quiet nights unless you take the shuttle out</li>
+          </ul>
+        </div>
+        <p class="link"><a href="https://www.booking.com/Share-C7OQ1e">View on Booking →</a></p>
+      </article>
+
+      <article class="card">
+        <div class="opthead"><span class="num">02</span><span class="chip in">Ski in, ski out</span></div>
+        <h3>Shiga Kogen Olympic</h3>
+        <div class="price">
+          <span class="big">S$2,365</span>
+          <span class="pp">per room · S$1,183 each</span>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Ski in, ski out</li>
+            <li>Same slope access without the Prince's age</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>S$800 more per room than the Prince for the same base</li>
+            <li>Same quiet nights</li>
+          </ul>
+        </div>
+        <p class="link"><a href="https://www.booking.com/Share-gye3ZnF">View on Booking →</a></p>
+      </article>
+    </div>
+
+    <div class="carstrip">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>
+        Do we rent from this base
+      </div>
+      <dl>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>With car</dt>
+          <dd>Opens up Yudanaka, 25 minutes down, plus the snow monkeys. Sits unused on riding days, so rent smaller.</dd>
+        </div>
+        <div>
+          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path><line x1="3" y1="21" x2="21" y2="3"></line></svg>No car</dt>
+          <dd>Shuttle to Ichinose from 5pm for food and bars. Anything off the mountain needs its own plan.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ BASE TWO ============ -->
+  <section class="group village">
+    <div class="gbar">
+      <span class="kicker">Base two</span>
+      <h2>Yudanaka village</h2>
+      <p>Onsen town by the station · livelier · not on the slopes</p>
+    </div>
+
+    <div class="row">
+      <article class="card">
+        <div class="opthead"><span class="num">03</span><span class="chip out">Not ski in</span></div>
+        <h3>Kamei no Yu</h3>
+        <div class="price">
+          <span class="big">S$2,000</span>
+          <span class="pp">per room · S$1,000 each</span>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Public onsen</li>
+            <li>Near Yudanaka station</li>
+            <li>Village dining and livelier nights</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>Not ski in, ski out</li>
+            <li>Costs more than the Prince and you still have to get to the snow</li>
+          </ul>
+        </div>
+        <p class="link"><a href="https://www.booking.com/Share-SvyVCpV">View on Booking →</a></p>
+      </article>
+
+      <article class="card">
+        <div class="opthead"><span class="num">04</span><span class="chip out">Not ski in</span></div>
+        <h3>Aburaya Tousen</h3>
+        <div class="price">
+          <span class="big">S$3,000</span>
+          <span class="pp">per room · S$1,500 each</span>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>The nicest place on the list</li>
+            <li>Outdoor bath, public or private</li>
+            <li>Big, spacious rooms, near the station</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>Nearly double the Prince</li>
+            <li>Not ski in, ski out</li>
+          </ul>
+        </div>
+        <p class="link"><a href="https://www.booking.com/Share-gUiOoG">View on Booking →</a></p>
+      </article>
+    </div>
+
+    <div class="carstrip">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>
+        Do we rent from this base
+      </div>
+      <dl>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>With car</dt>
+          <dd>The most flexible setup, but 20 to 25 minutes of mountain road up to the slopes every morning. Leave early, bring motion sickness pills.</dd>
+        </div>
+        <div>
+          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path><line x1="3" y1="21" x2="21" y2="3"></line></svg>No car</dt>
+          <dd>Shuttle up with your board each morning, and the last bus sets when your day ends. Finish riding earlier.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>Still open</h2>
+    <div>
+      <b>The price spread is the story</b>
+      <p>S$782 to S$1,500 per person, and the cheapest option is also the one closest to the lifts. Worth checking the four quotes cover the same nights before we read anything into it.</p>
+    </div>
+    <div>
+      <b>Who can drive</b>
+      <p>Twelve of us is two or three cars and drivers, on a mountain road in snow, twice a day. Car cost sits on top of every price above.</p>
+    </div>
+    <div>
+      <b>Shuttle and last bus times</b>
+      <p>Both no-car routes depend on timetables we have not confirmed.</p>
+    </div>
+  </section>
+
+  <div class="closer">
+    <b>Next</b>
+    Reply with a number, and say if you would drive.
+  </div>
+
+  </div><!-- /page-accom -->
+
+  <!-- ======================================================= -->
+  <!-- PAGE TWO — TRANSPORT                                     -->
+  <!-- ======================================================= -->
+  <div class="page-transport">
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · March</p>
+    <h1>How do<br>we <span class="alt">get up?</span></h1>
+    <p>Nagano Station to Shiga Kogen, three ways: express bus, train + local bus, or two rental cars. Timetables run 6 Dec 2025 – 6 Apr 2026.</p>
+  </header>
+
+  <!-- ============ BUS ============ -->
+  <section class="group bus">
+    <div class="gbar">
+      <span class="kicker">Route one</span>
+      <h2>Direct express bus</h2>
+      <p>Nagano Station East Exit → Shiga Kogen · one seat, no transfer</p>
+    </div>
+
+    <div class="row">
+      <article class="card">
+        <div class="opthead"><span class="num">1A</span><span class="chip in">Goes all the way up</span></div>
+        <h3>Weekday departures</h3>
+        <div class="stats">
+          <div class="stat"><span class="big">1h20–30</span><span class="pp">ride to Yamanoeki</span></div>
+          <div class="stat"><span class="big">¥3,000</span><span class="pp">one-way, per person</span></div>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Six solid weekday runs reach the resort: 9:10, 10:40, 11:15, 13:10, 14:30, 17:05</li>
+            <li>Continues past Yamanoeki to the Prince Hotels, Okushiga Gondola and Okushiga Kogen Hotel, ~10–15 min further</li>
+            <li>Cash, touch-card (Visa/Mastercard/UnionPay contactless) and PayPay/Alipay all accepted on board</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>Only one or two buses an hour, so the whole group needs to commit to the same departure</li>
+            <li>Confirm underfloor luggage space for 12 bags before booking — worth calling ahead or splitting across two departures</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="opthead"><span class="num">1B</span><span class="chip warn">Watch for these</span></div>
+        <h3>Snow Monkey Park only</h3>
+        <div class="stats">
+          <div class="stat"><span class="big">8:50 / 10:00*</span><span class="pp">10:20 / 11:40 / 12:20 / 14:10*</span></div>
+          <div class="stat"><span class="big">¥3,000</span><span class="pp">to Snow Monkey Park only</span></div>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>Useful if anyone wants a Snow Monkey Park detour before heading up</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>These runs terminate at Snow Monkey Park, well short of the ski area — don't board by mistake</li>
+            <li>The starred 10:00 and 14:10 runs are cash-free: buy tickets in advance at the Nagano Station ARUYO desk or a machine</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="carstrip">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+        A few extra runs
+      </div>
+      <dl>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>8:15 &amp; 21:00</dt>
+          <dd>An earlier 8:15 run to the resort adds on Saturdays (20 Dec–21 Mar) plus 11 Feb and 20 Mar. A 21:00 run needs a reservation and only runs Fridays (Jan 9–Mar 13) and Mar 19.</dd>
+        </div>
+        <div>
+          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>Coming back down</dt>
+          <dd>Return buses run from Okushiga Kogen Hotel roughly hourly from 7:45 to 17:40, last Nagano arrival around 20:05. Same ¥3,000 fare.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ TRAIN ============ -->
+  <section class="group train">
+    <div class="gbar">
+      <span class="kicker">Route two</span>
+      <h2>Train + local bus</h2>
+      <p>Nagaden Railway to Yudanaka, then the Shiga Kogen local bus network</p>
+    </div>
+
+    <div class="row single">
+      <article class="card">
+        <div class="opthead"><span class="num">2A</span><span class="chip in">One transfer, far more frequent</span></div>
+        <h3>Nagano → Yudanaka → Shiga Kogen</h3>
+        <div class="stats">
+          <div class="stat"><span class="big">~45–50min</span><span class="pp">Nagaden train to Yudanaka Sta.</span></div>
+          <div class="stat"><span class="big">~35–40min</span><span class="pp">local bus, Yudanaka → Yamanoeki</span></div>
+        </div>
+        <div class="blk plus">
+          <span class="lab">Good</span>
+          <ul>
+            <li>The Nagaden Railway leaves Nagano roughly every hour through the day, so it's forgiving if the group splits</li>
+            <li>The connecting local bus at Yudanaka Station (S01) is far denser than the express — near-continuous departures rather than a handful a day</li>
+          </ul>
+        </div>
+        <div class="blk minus">
+          <span class="lab">Bad</span>
+          <ul>
+            <li>An extra transfer at Yudanaka Station with 12 bags in tow</li>
+            <li>Train fare isn't printed on the bus timetable — confirm current Nagaden fare and any luggage limits at the station counter</li>
+            <li>Slower door-to-door than the direct express once the transfer is factored in</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ CAR RENTAL ============ -->
+  <section class="group car">
+    <div class="gbar">
+      <span class="kicker">Route three</span>
+      <h2>Two rental cars</h2>
+      <p>12 of us, 12 pieces of luggage · Toyota Rent a Car, picked up at Nagano Station</p>
+    </div>
+
+    <div class="row">
+      <article class="card">
+        <div class="opthead"><span class="num">3A</span><span class="chip in">6 pax + 6 bags</span></div>
+        <h3>Toyota Alphard Hybrid E-Four</h3>
+        <div class="blk plus">
+          <span class="lab">Setup</span>
+          <ul>
+            <li>Third row folded flat for luggage, rows one and two carry six people</li>
+            <li>E-Four = the 4WD hybrid grade — must be requested explicitly, the standard Hybrid trim is front-wheel drive only</li>
+            <li>Confirm cruise control is fitted on the specific unit at booking</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="opthead"><span class="num">3B</span><span class="chip in">6 pax + 6 bags</span></div>
+        <h3>Toyota Vellfire Hybrid E-Four</h3>
+        <div class="blk plus">
+          <span class="lab">Setup</span>
+          <ul>
+            <li>Same 6+6 arrangement, third row down, mirrors the Alphard</li>
+            <li>Same E-Four (4WD) confirmation needed at booking — don't assume it from the online listing alone</li>
+            <li>Confirm cruise control on this unit too</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="carstrip">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>
+        Booking notes
+      </div>
+      <dl>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>Book direct</dt>
+          <dd>Go through Toyota Rent a Car (or ORIX) directly rather than a generic booking platform, so the counter can actually guarantee both units are the E-Four trim on your dates.</dd>
+        </div>
+        <div>
+          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path><line x1="3" y1="21" x2="21" y2="3"></line></svg>Before you drive</dt>
+          <dd>Every driver needs an International Driving Permit, arranged in your home country before the trip. Pickup near Nagano Station puts you about an hour's mountain drive from Shiga Kogen.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>Still open</h2>
+    <div>
+      <b>Bus vs. car for the luggage-heavy leg</b>
+      <p>The express bus is simplest if 12 bags fit in the hold; the two-car option removes that risk entirely but adds two drivers with IDPs and a mountain-road drive.</p>
+    </div>
+    <div>
+      <b>Door-to-door from the airport</b>
+      <p>If arriving via Narita, a direct coach transfer straight through to Shiga Kogen exists (around ¥16,225 incl. tax per person, ~7 hours via Nagano) — worth weighing against flying into Nagano and doing this leg separately.</p>
+    </div>
+  </section>
+
+  <div class="closer">
+    <b>Next</b>
+    Pick a route, and if it's the cars, say who's driving so we can start the IDP paperwork.
+  </div>
+
+  </div><!-- /page-transport -->
+
+  <!-- ======================================================= -->
+  <!-- PAGE THREE — ITINERARY                                   -->
+  <!-- ======================================================= -->
+  <div class="page-itinerary">
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · March</p>
+    <h1>What's<br>the <span class="alt">plan?</span></h1>
+    <p>A rough shape for the trip — travel days, riding days, one detour. Edit once flights and the hotel are locked.</p>
+  </header>
+
+  <section class="group itin">
+    <div class="gbar">
+      <span class="kicker">Draft</span>
+      <h2>Day by day</h2>
+      <p>Placeholder dates — swap in real ones once flights are booked</p>
+    </div>
+
+    <div class="timeline">
+      <div class="day">
+        <span class="d-num">01</span>
+        <div class="d-body">
+          <h4>Arrive, transfer up</h4>
+          <p>Land in Japan, make our way to Nagano, then up to Shiga Kogen by whichever route we pick on the Transport tab. Check in, gear sort, early night.</p>
+          <span class="d-tag">Travel</span>
+        </div>
+      </div>
+      <div class="day">
+        <span class="d-num">02</span>
+        <div class="d-body">
+          <h4>Full day, riding</h4>
+          <p>First full day on the mountain. Lift pass and rental gear sorted the evening before if we can.</p>
+          <span class="d-tag">Ride</span>
+        </div>
+      </div>
+      <div class="day">
+        <span class="d-num">03</span>
+        <div class="d-body">
+          <h4>Full day, riding</h4>
+          <p>Second day on the slopes. Good day to explore a different lift zone from day one.</p>
+          <span class="d-tag">Ride</span>
+        </div>
+      </div>
+      <div class="day">
+        <span class="d-num">04</span>
+        <div class="d-body">
+          <h4>Snow Monkey Park detour</h4>
+          <p>Half-day down to Jigokudani Monkey Park via the Snow Monkey Park bus stop, half-day back on the mountain or resting for whoever skips it.</p>
+          <span class="d-tag">Side trip</span>
+        </div>
+      </div>
+      <div class="day">
+        <span class="d-num">05</span>
+        <div class="d-body">
+          <h4>Full day, riding</h4>
+          <p>Last full day on the mountain — save anything on the group's wish list for this one.</p>
+          <span class="d-tag">Ride</span>
+        </div>
+      </div>
+      <div class="day">
+        <span class="d-num">06</span>
+        <div class="d-body">
+          <h4>Check out, head home</h4>
+          <p>Morning checkout, transfer back down to Nagano, onward travel from there.</p>
+          <span class="d-tag">Travel</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>Still open</h2>
+    <div>
+      <b>Real dates</b>
+      <p>This is a six-day skeleton, not tied to actual flights yet — reshuffle once we know when everyone can fly in and out.</p>
+    </div>
+    <div>
+      <b>Lift passes</b>
+      <p>Multi-day pass vs. day-by-day depends on the final ride-day count above.</p>
+    </div>
+    <div>
+      <b>Who's driving which leg</b>
+      <p>If we go with the two rental cars, the arrival and departure days on this page are also the two drives — same people ideally, so it's one trip through the IDP paperwork.</p>
+    </div>
+  </section>
+
+  <div class="closer">
+    <b>Next</b>
+    Confirm flight windows, then we can put real dates against each day.
+  </div>
+
+  </div><!-- /page-itinerary -->
+
+</div><!-- /wrap -->
+
+
+</body></html>

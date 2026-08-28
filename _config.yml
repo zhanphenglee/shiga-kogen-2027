@@ -24,10 +24,6 @@ minima:
 nav:
   - title: Home
     url: /
-  - title: Itinerary
-    url: /itinerary/
-  - title: Accommodation
-    url: /accommodation/
   - title: Packing List
     url: /packing-list/
   - title: Budget

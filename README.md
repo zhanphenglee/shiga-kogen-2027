@@ -6,12 +6,14 @@ Trip planning site for our ski trip to Shiga Kogen, Nagano — 2027 season. 12 o
 
 ## What's here
 
-- `index.html` — homepage
-- `itinerary.md`, `accommodation.md`, `packing-list.md`, `budget.md`, `resources.md` —
-  content pages, edit these directly
+- `index.html` — the homepage. This is a self-contained page (own styles, own tab
+  navigation for Stay / Transport / Itinerary) — it does **not** use the Jekyll layout in
+  `_layouts/`, so edit it directly as plain HTML rather than through Liquid/front matter.
+- `packing-list.md`, `budget.md`, `resources.md` — content pages, edit these directly as
+  Markdown
 - `participants.md` + `_data/participants.yml` — "who's coming" page, backed by data file
-- `_layouts/`, `_includes/`, `assets/` — site theme/styling, don't need to touch these
-  unless you're changing the design
+- `_layouts/`, `_includes/`, `assets/` — theme/styling for the Markdown pages only
+  (the homepage carries its own styles inline)
 
 ## Contributing
 
