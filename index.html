@@ -1,0 +1,68 @@
+---
+layout: default
+omit_title: true
+---
+<div class="hero">
+  <h1>🎿 {{ site.trip.destination }}</h1>
+  <p class="meta">
+    {{ site.trip.season }} season &middot;
+    {{ site.trip.start_date }} &ndash; {{ site.trip.end_date }} &middot;
+    {{ site.trip.pax }} of us
+  </p>
+  <p>Welcome to the trip site! Everything about the trip lives here — itinerary, where we're
+  staying, what to pack, and how we're splitting costs. Anyone in the group can edit this
+  site — see the "How to contribute" note at the bottom of the page.</p>
+</div>
+
+<div class="card-grid">
+  <a class="card" href="{{ '/itinerary/' | relative_url }}">
+    <span class="emoji">🗓️</span>
+    <h3>Itinerary</h3>
+    <p>Day-by-day plan, flights, and travel between spots.</p>
+  </a>
+  <a class="card" href="{{ '/accommodation/' | relative_url }}">
+    <span class="emoji">🏨</span>
+    <h3>Accommodation</h3>
+    <p>Where we're staying, booking status, room assignments.</p>
+  </a>
+  <a class="card" href="{{ '/packing-list/' | relative_url }}">
+    <span class="emoji">🧳</span>
+    <h3>Packing List</h3>
+    <p>What to bring, what's shared gear vs. personal.</p>
+  </a>
+  <a class="card" href="{{ '/budget/' | relative_url }}">
+    <span class="emoji">💰</span>
+    <h3>Budget</h3>
+    <p>Estimated costs and how we're splitting the bill.</p>
+  </a>
+  <a class="card" href="{{ '/participants/' | relative_url }}">
+    <span class="emoji">👥</span>
+    <h3>Who's Coming</h3>
+    <p>The full squad, ski levels, and contact info.</p>
+  </a>
+  <a class="card" href="{{ '/resources/' | relative_url }}">
+    <span class="emoji">📎</span>
+    <h3>Resources</h3>
+    <p>Lift passes, weather, useful links, and apps.</p>
+  </a>
+</div>
+
+## About Shiga Kogen
+
+Shiga Kogen is Japan's largest ski resort area, in Nagano Prefecture — 19 interconnected
+ski areas on one lift pass, known for reliable powder and a much quieter vibe than Hakuba
+or Niseko. It was an Olympic venue in 1998 (Nagano Games).
+
+*(Fill in more details, trip dates, and photos as planning firms up!)*
+
+## How to contribute
+
+This whole site is just Markdown files in a GitHub repo — no coding needed to add or
+change content:
+
+1. Go to the [repo on GitHub](https://github.com/{{ site.github_username | default: "zhanphenglee" }}/shiga-kogen-2027).
+2. Open the page you want to edit (e.g. `itinerary.md`) and click the ✏️ pencil icon.
+3. Make your change and click **"Propose changes"**, then **"Create pull request"**.
+4. The site rebuilds automatically once the change is merged.
+
+See [CONTRIBUTING.md](https://github.com/{{ site.github_username | default: "zhanphenglee" }}/shiga-kogen-2027/blob/main/CONTRIBUTING.md) in the repo for the full walkthrough with screenshots-in-words.

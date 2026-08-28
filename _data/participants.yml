@@ -1,0 +1,11 @@
+# Everyone coming on the trip. Add your own details here in a Pull Request!
+# level: beginner / intermediate / advanced
+# role: optional — e.g. "flights", "accommodation", "budget tracker"
+- name: "Zhan"
+  level: "TBD"
+  role: "trip organizer"
+  notes: ""
+# - name: "Add your name here"
+#   level: "beginner"
+#   role: ""
+#   notes: "arriving a day late, need airport pickup"
