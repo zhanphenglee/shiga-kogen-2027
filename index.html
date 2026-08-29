@@ -183,6 +183,30 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 .card .link a{color:var(--vermilion);text-decoration:none;border-bottom:1.5px solid var(--vermilion);padding-bottom:1px;}
 .card .link a:hover{background:var(--vermilion);color:var(--card);}
 
+/* ---------- hotel feature (Stay) ---------- */
+.hero-photo{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:var(--slope-tint);}
+.photo-credit{display:block;margin:5px 9px 0;font-family:"Archivo Narrow",sans-serif;font-size:10px;color:var(--ink-soft);text-align:right;}
+.stats.grid{flex-wrap:wrap;row-gap:10px;}
+.stats.grid .stat{flex:1 1 28%;min-width:84px;}
+.quote{
+  margin:10px 0;padding:9px 12px;background:rgba(28,56,48,.06);
+  border-left:3px solid var(--gold);font-style:italic;font-size:14px;color:var(--ink-soft);
+}
+.quote cite{
+  display:block;margin-top:5px;font-style:normal;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink);
+}
+.cta-btn{
+  display:inline-block;padding:11px 20px;background:var(--vermilion);color:var(--card) !important;
+  font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none !important;border-radius:3px;
+  border-bottom:none !important;
+}
+.cta-btn:hover{background:var(--ink);}
+.mapembed{margin:11px 9px 12px;border:1.5px solid var(--ink);overflow:hidden;}
+.mapembed iframe{width:100%;height:340px;border:0;display:block;}
+
 /* ---------- car strip / note strip ---------- */
 .carstrip{margin:11px 9px 12px;border:1.5px dashed var(--ink-soft);background:rgba(249,244,232,.55);padding:10px 11px;}
 .group.village .carstrip{border-color:var(--village-bar);}
@@ -540,186 +564,76 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   <div class="page-accom">
 
   <header class="masthead">
-    <p class="eyebrow">Shiga Kogen · March</p>
-    <h1>Where do<br>we <span class="alt">sleep?</span></h1>
-    <p>Two bases, four hotels. All four include breakfast and dinner, all four are two per room. Pick one.</p>
+    <p class="eyebrow">Shiga Kogen · Booked</p>
+    <h1>We're staying<br>at the <span class="alt">Olympic</span></h1>
+    <p>Decision made. Shiga Kogen Olympic Hotel, 4/5 – 11 March 2027 — exact check-in day (4th or 5th) still to confirm.</p>
   </header>
 
-  <!-- ============ BASE ONE ============ -->
   <section class="group slopes">
     <div class="gbar">
-      <span class="kicker">Base one</span>
-      <h2>On the slopes</h2>
-      <p>Ski in, ski out · quiet · focused on the riding</p>
+      <span class="kicker">Base one · Confirmed</span>
+      <h2>Shiga Kogen Olympic Hotel</h2>
+      <p>Ski-in, ski-out · Shiga Kogen Ichinose, Yamanouchi, Nagano</p>
     </div>
 
-    <div class="row">
-      <article class="card">
-        <div class="opthead"><span class="num">01</span><span class="chip in">Ski in, ski out</span></div>
-        <h3>Shiga Kogen Prince</h3>
-        <div class="price">
-          <span class="big">S$1,564</span>
-          <span class="pp">per room · S$782 each</span>
-        </div>
-        <div class="blk plus">
-          <span class="lab">Good</span>
-          <ul>
-            <li>Cheapest of the four by a wide margin</li>
-            <li>Upper centre of the map, easy to reach the rest of the mountain</li>
-            <li>Train and bus straight from Narita</li>
-          </ul>
-        </div>
-        <div class="blk minus">
-          <span class="lab">Bad</span>
-          <ul>
-            <li>Old hotel</li>
-            <li>Quiet nights unless you take the shuttle out</li>
-          </ul>
-        </div>
-        <p class="link"><a href="https://www.booking.com/Share-C7OQ1e">View on Booking →</a></p>
-      </article>
+    <div style="margin:11px 9px 0;">
+      <img class="hero-photo" src="https://r-xx.bstatic.com/xdata/images/hotel/608x352/405619742.webp?k=4e3a5fdc0dc54495cbb967c5bf2c49f956a0ec55139a876a38cc0897f8624c2e&amp;o=" alt="Shiga Kogen Olympic Hotel" onerror="this.style.display='none'">
+      <span class="photo-credit">Photo via Booking.com</span>
+    </div>
 
+    <div class="row single">
       <article class="card">
-        <div class="opthead"><span class="num">02</span><span class="chip in">Ski in, ski out</span></div>
-        <h3>Shiga Kogen Olympic</h3>
-        <div class="price">
-          <span class="big">S$2,365</span>
-          <span class="pp">per room · S$1,183 each</span>
+        <div class="opthead"><span class="num">01</span><span class="chip in">Excellent location — 9.5</span></div>
+        <h3>4/5 – 11 March 2027</h3>
+
+        <div class="stats grid">
+          <div class="stat"><span class="big">8.0</span><span class="pp">Overall · 238 reviews</span></div>
+          <div class="stat"><span class="big">9.3</span><span class="pp">Staff</span></div>
+          <div class="stat"><span class="big">9.5</span><span class="pp">Location</span></div>
+          <div class="stat"><span class="big">8.3</span><span class="pp">Comfort</span></div>
+          <div class="stat"><span class="big">8.0</span><span class="pp">Cleanliness</span></div>
+          <div class="stat"><span class="big">10</span><span class="pp">Free WiFi</span></div>
         </div>
+
         <div class="blk plus">
-          <span class="lab">Good</span>
+          <span class="lab">Amenities</span>
           <ul>
-            <li>Ski in, ski out</li>
-            <li>Same slope access without the Prince's age</li>
+            <li>Ski-to-door access — right across from the ski field</li>
+            <li>Onsen / hot tub (public bath)</li>
+            <li>Ski equipment hire &amp; ski locker on site</li>
+            <li>2 restaurants — buffet breakfast &amp; dinner (Japanese, local, international, European)</li>
+            <li>Free WiFi in public areas, free private parking</li>
+            <li>Paid airport shuttle available</li>
+            <li>Family rooms, mountain-view rooms, non-smoking rooms, ensuite bathrooms available</li>
           </ul>
         </div>
+
         <div class="blk minus">
-          <span class="lab">Bad</span>
+          <span class="lab">Good to know</span>
           <ul>
-            <li>S$800 more per room than the Prince for the same base</li>
-            <li>Same quiet nights</li>
+            <li>Check-in 15:00–21:00 (tell the hotel your arrival time in advance) · check-out 07:00–10:00</li>
+            <li>Curfew — entry closed 22:00–07:00</li>
+            <li>Cards only, cash not accepted · pets not allowed · no cots or extra beds</li>
           </ul>
         </div>
-        <p class="link"><a href="https://www.booking.com/Share-gye3ZnF">View on Booking →</a></p>
+
+        <div class="quote">
+          "Ski-in, ski-out: perfect for our holiday; staff is amazing, helpful and friendly; facilities are good."
+          <cite>Elesse, Singapore</cite>
+        </div>
+        <div class="quote">
+          "Very close to the chair lifts, practically right across the street, ski lockers and rental on site for maximum convenience, relaxing onsen to enjoy every evening, great buffet breakfast and dinner."
+          <cite>Zhi, Singapore</cite>
+        </div>
+
+        <p class="link"><a class="cta-btn" href="https://www.booking.com/Share-gye3ZnF">Book / manage on Booking.com →</a></p>
       </article>
     </div>
 
-    <div class="carstrip">
-      <div class="head">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>
-        Do we rent from this base
-      </div>
-      <dl>
-        <div>
-          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>With car</dt>
-          <dd>Opens up Yudanaka, 25 minutes down, plus the snow monkeys. Sits unused on riding days, so rent smaller.</dd>
-        </div>
-        <div>
-          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path><line x1="3" y1="21" x2="21" y2="3"></line></svg>No car</dt>
-          <dd>Shuttle to Ichinose from 5pm for food and bars. Anything off the mountain needs its own plan.</dd>
-        </div>
-      </dl>
+    <div class="mapembed">
+      <iframe src="https://www.google.com/maps?q=36.737106,138.512801&z=16&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Shiga Kogen Olympic Hotel location"></iframe>
     </div>
   </section>
-
-  <!-- ============ BASE TWO ============ -->
-  <section class="group village">
-    <div class="gbar">
-      <span class="kicker">Base two</span>
-      <h2>Yudanaka village</h2>
-      <p>Onsen town by the station · livelier · not on the slopes</p>
-    </div>
-
-    <div class="row">
-      <article class="card">
-        <div class="opthead"><span class="num">03</span><span class="chip out">Not ski in</span></div>
-        <h3>Kamei no Yu</h3>
-        <div class="price">
-          <span class="big">S$2,000</span>
-          <span class="pp">per room · S$1,000 each</span>
-        </div>
-        <div class="blk plus">
-          <span class="lab">Good</span>
-          <ul>
-            <li>Public onsen</li>
-            <li>Near Yudanaka station</li>
-            <li>Village dining and livelier nights</li>
-          </ul>
-        </div>
-        <div class="blk minus">
-          <span class="lab">Bad</span>
-          <ul>
-            <li>Not ski in, ski out</li>
-            <li>Costs more than the Prince and you still have to get to the snow</li>
-          </ul>
-        </div>
-        <p class="link"><a href="https://www.booking.com/Share-SvyVCpV">View on Booking →</a></p>
-      </article>
-
-      <article class="card">
-        <div class="opthead"><span class="num">04</span><span class="chip out">Not ski in</span></div>
-        <h3>Aburaya Tousen</h3>
-        <div class="price">
-          <span class="big">S$3,000</span>
-          <span class="pp">per room · S$1,500 each</span>
-        </div>
-        <div class="blk plus">
-          <span class="lab">Good</span>
-          <ul>
-            <li>The nicest place on the list</li>
-            <li>Outdoor bath, public or private</li>
-            <li>Big, spacious rooms, near the station</li>
-          </ul>
-        </div>
-        <div class="blk minus">
-          <span class="lab">Bad</span>
-          <ul>
-            <li>Nearly double the Prince</li>
-            <li>Not ski in, ski out</li>
-          </ul>
-        </div>
-        <p class="link"><a href="https://www.booking.com/Share-gUiOoG">View on Booking →</a></p>
-      </article>
-    </div>
-
-    <div class="carstrip">
-      <div class="head">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>
-        Do we rent from this base
-      </div>
-      <dl>
-        <div>
-          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path></svg>With car</dt>
-          <dd>The most flexible setup, but 20 to 25 minutes of mountain road up to the slopes every morning. Leave early, bring motion sickness pills.</dd>
-        </div>
-        <div>
-          <dt class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h9l4 5h3v4h-2M9 17h6"></path><line x1="3" y1="21" x2="21" y2="3"></line></svg>No car</dt>
-          <dd>Shuttle up with your board each morning, and the last bus sets when your day ends. Finish riding earlier.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="open">
-    <h2>Still open</h2>
-    <div>
-      <b>The price spread is the story</b>
-      <p>S$782 to S$1,500 per person, and the cheapest option is also the one closest to the lifts. Worth checking the four quotes cover the same nights before we read anything into it.</p>
-    </div>
-    <div>
-      <b>Who can drive</b>
-      <p>Twelve of us is two or three cars and drivers, on a mountain road in snow, twice a day. Car cost sits on top of every price above.</p>
-    </div>
-    <div>
-      <b>Shuttle and last bus times</b>
-      <p>Both no-car routes depend on timetables we have not confirmed.</p>
-    </div>
-  </section>
-
-  <div class="closer">
-    <b>Next</b>
-    Reply with a number, and say if you would drive.
-  </div>
 
   </div><!-- /page-accom -->
 
