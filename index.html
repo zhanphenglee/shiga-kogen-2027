@@ -1035,7 +1035,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
     var el = document.getElementById("trip-map");
     if (!el || el._leaflet_id) return;
 
-    var map = L.map("trip-map", { scrollWheelZoom: false }).setView([36.735, 138.495], 13);
+    var map = L.map("trip-map", { scrollWheelZoom: false });
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -1054,12 +1054,28 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
       .addTo(map)
       .bindPopup('<div class="popcard"><h4>Closed in winter</h4><p>Route 292 past here is shut roughly mid-November to late April, toward Kusatsu (Gunma). In ski season this is a dead end, not a through-route.</p></div>');
 
+    var markerPoints = [];
     ZONES.forEach(function(z){
       var html = '<div class="popcard"><span class="num">' + z.num + '</span><h4>' + z.name + '</h4><p>' + z.blurb + '</p><a href="#' + z.id + '">Full details &darr;</a></div>';
       L.marker([z.lat, z.lng], { icon: pinIcon(z.num) }).addTo(map).bindPopup(html);
+      markerPoints.push([z.lat, z.lng]);
     });
 
-    setTimeout(function(){ map.invalidateSize(); }, 200);
+    var fullBounds = L.latLngBounds(markerPoints);
+
+    // The container can report zero width for a moment right after load
+    // (fonts/stylesheets still settling), which makes fitBounds degenerate
+    // to max zoom. Poll until it actually has real dimensions.
+    function fitToAllZones(attempt){
+      attempt = attempt || 0;
+      if (el.offsetWidth > 0 || attempt > 40) {
+        map.invalidateSize();
+        map.fitBounds(fullBounds, { padding: [24, 24] });
+      } else {
+        setTimeout(function(){ fitToAllZones(attempt + 1); }, 100);
+      }
+    }
+    fitToAllZones();
 
     document.getElementById("tab-overview").addEventListener("change", function(){
       setTimeout(function(){ map.invalidateSize(); }, 60);
