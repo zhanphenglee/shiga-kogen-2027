@@ -1,0 +1,20 @@
+[
+  { "id": "zone-ichinose", "num": "01", "name": "Ichinose", "lat": 36.7383, "lng": 138.5132,
+    "blurb": "Central hub — most rental shops, restaurants, and lifts radiate from here." },
+  { "id": "zone-yakebitaiyama", "num": "02", "name": "Yakebitaiyama", "lat": 36.7507, "lng": 138.5184,
+    "blurb": "Base One — Shiga Kogen Prince &amp; Olympic hotels, true ski-in ski-out." },
+  { "id": "zone-okushiga", "num": "03", "name": "Okushiga Kogen", "lat": 36.7697, "lng": 138.5146,
+    "blurb": "Furthest north, quietest lines, often the best untouched snow." },
+  { "id": "zone-higashidateyama", "num": "04", "name": "Higashidateyama &amp; Terakoya", "lat": 36.7271, "lng": 138.5190,
+    "blurb": "The largest connected block of runs, including Takamagahara Mammoth." },
+  { "id": "zone-yokoteyama", "num": "05", "name": "Yokoteyama", "lat": 36.6750, "lng": 138.5150,
+    "blurb": "Easternmost, quietest, right by the pass that's shut all winter." },
+  { "id": "zone-sunvalley", "num": "06", "name": "Sun Valley cluster", "lat": 36.7151, "lng": 138.4857,
+    "blurb": "Sun Valley · Kidoike · Maruike · Giant — central, good beginner mix." },
+  { "id": "zone-kitashiga", "num": "07", "name": "Kita-Shiga Kogen", "lat": 36.7793, "lng": 138.4741,
+    "blurb": "Ryuoo &amp; Komaruyama — a separate resort, needs its own transport leg." },
+  { "id": "zone-yudanaka", "num": "08", "name": "Yudanaka &amp; Shibu Onsen", "lat": 36.7344, "lng": 138.4306,
+    "blurb": "Base Two — Kamei no Yu &amp; Aburaya Tousen, the station, onsen town." },
+  { "id": "zone-snowmonkey", "num": "09", "name": "Snow Monkey Park", "lat": 36.7328, "lng": 138.4623,
+    "blurb": "Jigokudani Yaen-koen — the Day 4 side trip from Yudanaka." }
+]

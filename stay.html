@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stay — Shiga Kogen 2027</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo+Narrow:wght@400;600;700&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+<div class="wrap">
+
+<nav class="pill-row">
+  <div class="pill-track">
+    <a href="index.html">Overview</a>
+    <a href="stay.html" class="active">Stay</a>
+    <a href="transport.html">Transport</a>
+    <a href="itinerary.html">Itinerary</a>
+    <a href="food.html">Food</a>
+  </div>
+</nav>
+
+
+  <header class="masthead">
+    <p class="eyebrow">Shiga Kogen · Booked</p>
+    <h1>We're staying<br>at the <span class="alt">Olympic</span></h1>
+    <p>Decision made. Shiga Kogen Olympic Hotel, 4/5 – 11 March 2027 — exact check-in day (4th or 5th) still to confirm.</p>
+  </header>
+
+  <section class="group slopes">
+    <div class="gbar">
+      <span class="kicker">Base one · Confirmed</span>
+      <h2>Shiga Kogen Olympic Hotel</h2>
+      <p>Ski-in, ski-out · Shiga Kogen Ichinose, Yamanouchi, Nagano</p>
+    </div>
+
+    <div style="margin:11px 9px 0;">
+      <img class="hero-photo" src="images/olympic-hero.png" alt="Shiga Kogen Olympic Hotel, exterior in the snow">
+    </div>
+
+    <div class="row single">
+      <article class="card">
+        <div class="opthead"><span class="num">01</span><span class="chip in">Excellent location — 9.5</span></div>
+        <h3>4/5 – 11 March 2027</h3>
+
+        <div class="stats grid">
+          <div class="stat"><span class="big">8.0</span><span class="pp">Overall · 238 reviews</span></div>
+          <div class="stat"><span class="big">9.3</span><span class="pp">Staff</span></div>
+          <div class="stat"><span class="big">9.5</span><span class="pp">Location</span></div>
+          <div class="stat"><span class="big">8.3</span><span class="pp">Comfort</span></div>
+          <div class="stat"><span class="big">8.0</span><span class="pp">Cleanliness</span></div>
+          <div class="stat"><span class="big">10</span><span class="pp">Free WiFi</span></div>
+        </div>
+
+        <div class="blk plus">
+          <span class="lab">Amenities</span>
+          <ul>
+            <li>Ski-to-door access — right across from the ski field</li>
+            <li>Onsen / hot tub (public bath)</li>
+            <li>Ski equipment hire &amp; ski locker on site</li>
+            <li>2 restaurants — buffet breakfast &amp; dinner (Japanese, local, international, European)</li>
+            <li>Free WiFi in public areas, free private parking</li>
+            <li>Paid airport shuttle available</li>
+            <li>Family rooms, mountain-view rooms, non-smoking rooms, ensuite bathrooms available</li>
+          </ul>
+        </div>
+
+        <div class="blk minus">
+          <span class="lab">Good to know</span>
+          <ul>
+            <li>Check-in 15:00–21:00 (tell the hotel your arrival time in advance) · check-out 07:00–10:00</li>
+            <li>Curfew — entry closed 22:00–07:00</li>
+            <li>Cards only, cash not accepted · pets not allowed · no cots or extra beds</li>
+          </ul>
+        </div>
+
+        <div class="quote">
+          "Ski-in, ski-out: perfect for our holiday; staff is amazing, helpful and friendly; facilities are good."
+          <cite>Elesse, Singapore</cite>
+        </div>
+        <div class="quote">
+          "Very close to the chair lifts, practically right across the street, ski lockers and rental on site for maximum convenience, relaxing onsen to enjoy every evening, great buffet breakfast and dinner."
+          <cite>Zhi, Singapore</cite>
+        </div>
+
+        <p class="link"><a class="cta-btn" href="https://www.booking.com/Share-gye3ZnF">Book / manage on Booking.com →</a></p>
+      </article>
+    </div>
+
+    <div class="mapembed">
+      <iframe src="https://www.google.com/maps?q=36.737106,138.512801&z=16&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Shiga Kogen Olympic Hotel location"></iframe>
+    </div>
+
+    <div style="margin:18px 9px 0;">
+      <h3 style="font-size:15px;text-transform:uppercase;">How far is everything?</h3>
+      <p style="margin:4px 0 0;color:var(--ink-soft);font-size:13.5px;">🏨 is the hotel. Ski areas are numbered by straight-line distance from it — 1 is closest.</p>
+    </div>
+
+    <div class="mapbox">
+      <div id="stay-map"></div>
+    </div>
+
+    <div class="maplegend">
+      <span><i style="background:var(--vermilion);"></i> Shiga Kogen Olympic Hotel (🏨)</span>
+      <span><i></i> Ski areas, 1 = closest, 9 = furthest</span>
+    </div>
+  </section>
+
+  <section class="group slopes">
+    <div class="gbar">
+      <span class="kicker">Ichinose</span>
+      <h2>Ski Slopes at Your Door</h2>
+      <p>Olympic Hotel sits in Ichinose itself — Diamond and Family are the actual home lifts</p>
+    </div>
+
+    <p style="margin:11px 9px 0;font-size:14.5px;color:var(--ink-soft);line-height:1.4;">
+      Correction from an earlier draft of this page: the home mountain is <strong>Ichinose</strong>,
+      not Yakebitaiyama. Olympic Hotel's own address places it in Ichinose, right by the Ichinose
+      Diamond and Ichinose Family lifts — Yakebitaiyama (where the Prince Hotels actually sit) is a
+      genuine neighbour, one run away, not the doorstep. Ichinose Diamond + Family together run 9
+      named courses across 8 lifts — mostly green, a few red, one proper black — connected to each
+      other by the short Monkey Course.
+    </p>
+
+    <div class="slopemap">
+      <div class="slopemap-imgwrap">
+        <img src="images/ichinose-hotel-location.webp" alt="Official Shiga Kogen Central Area trail map, cropped to Ichinose Family and Ichinose Diamond, with Shiga Kogen Olympic Hotel's exact position marked and labelled" loading="lazy">
+      </div>
+      <p class="cap"><strong>Official Shiga Kogen Central Area map</strong>, cropped to Ichinose, with Olympic Hotel's exact spot marked. Blue circles are course numbers (matched to names below); yellow squares are lift numbers — different numbering, so a course and a lift can share a digit. The hotel sits right by Ichinose Diamond, served by lift No.29 — this is the genuinely nearest lift-served terrain, a few hundred metres away. Prince Hotel West, visible top-left, is the Yakebitaiyama side, not the Olympic.</p>
+    </div>
+
+    <div class="difflegend">
+      <span><i class="g"></i> Green — beginner</span>
+      <span><i class="r"></i> Red — intermediate</span>
+      <span><i class="k"></i> Black — advanced</span>
+    </div>
+    <p style="margin:0 9px 12px;font-size:12.5px;font-style:italic;color:var(--ink-soft);">
+      Ichinose's own map uses a 3-level scale — red means intermediate here, not advanced like it did
+      on the Yakebitaiyama map further down.
+    </p>
+
+    <div class="mapkey">
+      <div class="kchip"><span class="code k">24</span><span class="nm"><b>Perfecter Course</b><small>1,500m · avg 26°</small></span></div>
+      <div class="kchip"><span class="code g">21</span><span class="nm"><b>Ichinose Family Front</b><small>1,000m · avg 15°</small></span></div>
+      <div class="kchip"><span class="code g">22</span><span class="nm"><b>Tengu Course</b><small>3,200m · avg 10°</small></span></div>
+      <div class="kchip"><span class="code r">23</span><span class="nm"><b>Panorama Course</b><small>2,300m · avg 16°</small></span></div>
+      <div class="kchip"><span class="code g">20</span><span class="nm"><b>Tanneno Mori Okojo</b><small>500m · avg 10°</small></span></div>
+      <div class="kchip"><span class="code r">30</span><span class="nm"><b>Diamond Slope</b><small>500m · avg 12°</small></span></div>
+      <div class="kchip"><span class="code g">31</span><span class="nm"><b>Rabbit Course</b><small>600m · avg 9°</small></span></div>
+      <div class="kchip"><span class="code g">32</span><span class="nm"><b>Monkey Course</b><small>750m · avg 8°</small></span></div>
+      <div class="kchip"><span class="code r">33</span><span class="nm"><b>Kamoshika Course</b><small>800m · avg 8°</small></span></div>
+    </div>
+    <p style="margin:0 9px 16px;font-size:12.5px;font-style:italic;color:var(--ink-soft);">
+      Numbers 25&ndash;28 belong to lifts on this map, not courses — course and lift numbering run as
+      two separate sequences, so a digit can mean either depending on whether it's in a blue circle
+      or a yellow square.
+    </p>
+
+    <div class="rungroup">
+      <h4><i class="k"></i> Black — advanced (1 run)</h4>
+      <div class="runcard k">
+        <div class="rhead"><h3 style="font-size:15.5px;">24 · Perfecter Course</h3><span class="rstats">1,500m · avg 26°</span></div>
+        <p>Ichinose's only black — long and consistently steep, used for competitive ski training.
+        The obvious step up once the group's comfortable on Panorama or Eternal.</p>
+      </div>
+    </div>
+
+    <div class="rungroup">
+      <h4><i class="r"></i> Red — intermediate (3 runs)</h4>
+      <div class="runcard r">
+        <div class="rhead"><h3 style="font-size:15.5px;">23 · Panorama Course</h3><span class="rstats">2,300m · avg 16°</span></div>
+        <p>The longest course in Ichinose by a wide margin — a real point-to-point descent with
+        views back over the valley, not just a lap run.</p>
+      </div>
+      <div class="runcard r">
+        <div class="rhead"><h3 style="font-size:15.5px;">30 · Diamond Slope</h3><span class="rstats">500m · avg 12°</span></div>
+        <p>Ichinose Diamond's main run and the closest named piste to Olympic Hotel — wide and
+        straightforward, good for a quick lap before breakfast closes.</p>
+      </div>
+      <div class="runcard r">
+        <div class="rhead"><h3 style="font-size:15.5px;">33 · Kamoshika Course</h3><span class="rstats">800m · avg 8°</span></div>
+        <p>The connector across to Yakebitaiyama — gentle enough that it reads more like a green
+        despite the intermediate rating. This is how the group gets over to the Prince Hotel side
+        and the Olympic Course/Yakebi Wall below.</p>
+      </div>
+    </div>
+
+    <div class="rungroup">
+      <h4><i class="g"></i> Green — beginner (5 runs)</h4>
+      <div class="runcard g">
+        <div class="rhead"><h3 style="font-size:15.5px;">22 · Tengu Course</h3><span class="rstats">3,200m · avg 10°</span></div>
+        <p>The longest run in Ichinose, full stop — a gentle, unhurried 3.2km cruise that's genuinely
+        rare to find at beginner pitch. The one to save for a tired-legs afternoon lap.</p>
+      </div>
+      <div class="runcard g">
+        <div class="rhead"><h3 style="font-size:15.5px;">21 · Ichinose Family Front Slope</h3><span class="rstats">1,000m · avg 15°</span></div>
+        <p>The main face of Ichinose Family, right off the base — the run most of the group will
+        default to on the first few laps.</p>
+      </div>
+      <div class="runcard g">
+        <div class="rhead"><h3 style="font-size:15.5px;">20 · Tanneno Mori Okojo Slope</h3><span class="rstats">500m · avg 10°</span></div>
+        <p>Sits just past the Family boundary toward Takamagahara — an easy, low-traffic slope if the
+        main Family face is busy.</p>
+      </div>
+      <div class="runcard g">
+        <div class="rhead"><h3 style="font-size:15.5px;">31 · Rabbit Course</h3><span class="rstats">600m · avg 9°</span></div>
+        <p>Ichinose Diamond's beginner loop, running alongside the main Diamond Slope — first-timers
+        can stay here while the rest of the group takes the red.</p>
+      </div>
+      <div class="runcard g">
+        <div class="rhead"><h3 style="font-size:15.5px;">32 · Monkey Course</h3><span class="rstats">750m · avg 8°</span></div>
+        <p>The easy link between Ichinose Family and Ichinose Diamond — this is how the two halves of
+        the home mountain actually connect, no shuttle needed.</p>
+      </div>
+    </div>
+
+    <div class="gbar" style="margin:20px -1px 0;">
+      <span class="kicker">On the mountain</span>
+      <h2 style="font-size:20px;">Lifts serving Ichinose</h2>
+    </div>
+
+    <div class="liftgrid" style="margin-top:11px;">
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v6M12 15v6"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose Quad Lift</h5>
+          <div class="lmeta">4-person quad · Lift No.23</div>
+          <p>The main lift out of the Ichinose Family base — this is the one that reaches Tengu,
+          Panorama, and the upper Family terrain.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"></circle><path d="M12 3v6.5M12 14.5V21" stroke-dasharray="2 3"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose 2nd Pair Lift A</h5>
+          <div class="lmeta">2-person pair · Lift No.24</div>
+          <p>Short pair lift right at the Ichinose Ski Field hub, next to the rental/AED station shown
+          on the map.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"></circle><path d="M12 3v6.5M12 14.5V21" stroke-dasharray="2 3"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose 2nd Pair Lift B</h5>
+          <div class="lmeta">2-person pair · Lift No.25</div>
+          <p>Runs parallel to 2nd Pair A from the same base — the two together handle most of the
+          beginner-to-intermediate traffic right at the hub.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v6M12 15v6"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose 3rd Quad Lift</h5>
+          <div class="lmeta">4-person quad · Lift No.26</div>
+          <p>Reaches further up the Family flank toward Eternal and Perfecter — the way up if the
+          group's ready for the black.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v6M12 15v6"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose 8th Quad Lift</h5>
+          <div class="lmeta">4-person quad · Lift No.28</div>
+          <p>Serves the far side of the Family area toward LIPS and the Takamagahara boundary —
+          quieter than the main quad.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"></circle><path d="M12 3v6.5M12 14.5V21" stroke-dasharray="2 3"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose Diamond Pair Lift</h5>
+          <div class="lmeta">2-person pair · Lift No.29</div>
+          <p>The closest lift to Olympic Hotel on this whole page — serves the Diamond Slope and
+          Rabbit Course loop.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v6M12 15v6"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose Diamond Quad Lift</h5>
+          <div class="lmeta">4-person quad · Lift No.30</div>
+          <p>Runs alongside the Diamond Pair Lift from the same base — faster option for lapping the
+          Diamond/Rabbit loop.</p>
+        </div>
+      </div>
+      <div class="liftcard">
+        <span class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v6M12 15v6"></path></svg></span>
+        <div class="lbody">
+          <h5>Ichinose Yamanokami 2nd Lift</h5>
+          <div class="lmeta">Lift No.32 · type not specified on the resort's own map</div>
+          <p>Tucked in the Yamanokami corner by the Monkey and Kamoshika connectors — the way over
+          toward Ichinose Family and, eventually, Yakebitaiyama.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="carstrip">
+      <div class="head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"></path></svg>
+        Getting around from here
+      </div>
+      <dl>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"></path></svg>Monkey Course</dt>
+          <dd>~750m, links Ichinose Family and Ichinose Diamond directly — the two halves of the home
+          mountain, no shuttle needed.</dd>
+        </div>
+        <div>
+          <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"></path></svg>Kamoshika Course</dt>
+          <dd>~800m, the way over to Yakebitaiyama and the Prince Hotel side — see below for what's
+          over there.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="group slopes">
+    <div class="gbar">
+      <span class="kicker">One run away · Yakebitaiyama</span>
+      <h2>Bonus Mountain Next Door</h2>
+      <p>Ski the Kamoshika Course from Ichinose and you're there — no shuttle, no walking</p>
+    </div>
+
+    <p style="margin:11px 9px 0;font-size:14.5px;color:var(--ink-soft);line-height:1.4;">
+      This is where the Prince Hotels sit, and it hosted the Giant Slalom at the
+      <strong>1998 Nagano Winter Olympics</strong> — that course is still skiable today. It's worth a
+      full day: 20 runs, 2 gondolas, 3 chair/pair lifts, a proper black wall, and a rare tree run for
+      Shiga Kogen. The map below carries its own full English legend for all 20 runs (A1–O1) and all
+      5 lifts, so it's reproduced here as-is rather than repeated in text.
+    </p>
+
+    <div class="slopemap">
+      <div class="slopemap-imgwrap">
+        <img src="images/yakebitaiyama-trail-map.jpg" alt="Official Yakebitaiyama ski resort trail map, showing every numbered run (A1-A7, B1-B2, C1-C4, D1-D4, E1-E2, O1), all 5 lifts, and the Prince Hotel base buildings" loading="lazy">
+      </div>
+      <p class="cap"><strong>Official Prince Hotels trail map</strong> for Yakebitaiyama — the full run and lift legend is printed directly on the sheet, top right. Reach it from Ichinose via the Kamoshika Course (bottom-left arrow, "To Ichinose").</p>
+    </div>
+
+    <div class="rungroup">
+      <h4><i class="k"></i> Worth knowing before you go</h4>
+      <div class="runcard k">
+        <div class="rhead"><h3 style="font-size:15.5px;">A4 · Olympic Course</h3><span class="rstats">570m · 250m vert · avg 21° · Black</span></div>
+        <p>The actual 1998 Nagano Winter Olympics Giant Slalom course. Short, consistently steep,
+        no flats — the one to say you skied when you're home.</p>
+      </div>
+      <div class="runcard k">
+        <div class="rhead"><h3 style="font-size:15.5px;">A5 · Yakebi Wall</h3><span class="rstats">230m · 200m vert · avg 39° · Black</span></div>
+        <p>The steepest pitch on the mountain, often mogulled by midday. Scope it from the lift
+        before committing.</p>
+      </div>
+      <div class="runcard k">
+        <div class="rhead"><h3 style="font-size:15.5px;">A7 · Yakebi Valley</h3><span class="rstats">623m · 200m vert · Black</span></div>
+        <p>A genuine tree run through the valley — rare for Shiga Kogen, where most terrain is
+        groomed and open. Listed as Advanced on the resort's own map, alongside Olympic and Yakebi
+        Wall, not intermediate.</p>
+      </div>
+      <div class="runcard b">
+        <div class="rhead"><h3 style="font-size:15.5px;">A1 · Giant Slalom Course</h3><span class="rstats">2,230m · 440m vert · Blue</span></div>
+        <p>The mountain's longest run, top to base off Gondola 1 — wide and forgiving, good for
+        keeping the whole group together.</p>
+      </div>
+    </div>
+
+    <p style="margin:4px 9px 16px;font-size:13px;color:var(--ink-soft);">
+      Two gondolas (No.1, 8-seat, 1,925m; No.2 "Panorama", 6-seat, 2,121m), two 4-person high-speed
+      quads, and one 2-person Romance Lift round out the other 16 runs — full names, lengths, and
+      difficulty are all on the map above.
+    </p>
+  </section>
+
+<p class="sitefoot"><a href="https://github.com/zhanphenglee/shiga-kogen-2027">Edit this page on GitHub</a></p>
+
+</div><!-- /wrap -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/map.js"></script>
+<script>
+  Promise.all([
+    fetch("data/zones.json").then(r => r.json()),
+    fetch("data/hotel.json").then(r => r.json())
+  ]).then(([zones, hotel]) => {
+    TripMap.initStayMap("stay-map", zones, hotel);
+  });
+</script>
+
+</body></html>
