@@ -211,6 +211,10 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 .cta-btn:hover{background:var(--ink);}
 .mapembed{margin:11px 9px 12px;border:1.5px solid var(--ink);overflow:hidden;}
 .mapembed iframe{width:100%;height:340px;border:0;display:block;}
+.pin-badge.lodging{
+  width:32px;height:32px;background:var(--vermilion);font-size:15px;
+  box-shadow:0 2px 6px rgba(0,0,0,.35);
+}
 
 /* ---------- car strip / note strip ---------- */
 .carstrip{margin:11px 9px 12px;border:1.5px dashed var(--ink-soft);background:rgba(249,244,232,.55);padding:10px 11px;}
@@ -251,7 +255,7 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 
 /* ---------- interactive layout map (Overview) — real Leaflet map ---------- */
 .mapbox{margin:11px 9px 8px;border:1.5px solid var(--ink);overflow:hidden;background:var(--card);}
-#trip-map{width:100%;height:min(70vh,520px);min-height:320px;background:var(--card);}
+#trip-map,#stay-map{width:100%;height:min(70vh,520px);min-height:320px;background:var(--card);}
 .leaflet-container{font-family:"Newsreader",Georgia,serif;background:var(--card) !important;}
 .pin-badge{
   display:flex;align-items:center;justify-content:center;
@@ -714,6 +718,20 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
 
     <div class="mapembed">
       <iframe src="https://www.google.com/maps?q=36.737106,138.512801&z=16&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Shiga Kogen Olympic Hotel location"></iframe>
+    </div>
+
+    <div style="margin:18px 9px 0;">
+      <h3 style="font-size:15px;text-transform:uppercase;">How far is everything?</h3>
+      <p style="margin:4px 0 0;color:var(--ink-soft);font-size:13.5px;">🏨 is the hotel. Ski areas are numbered by straight-line distance from it — 1 is closest.</p>
+    </div>
+
+    <div class="mapbox">
+      <div id="stay-map"></div>
+    </div>
+
+    <div class="maplegend">
+      <span><i style="background:var(--vermilion);"></i> Shiga Kogen Olympic Hotel (🏨)</span>
+      <span><i></i> Ski areas, 1 = closest, 9 = furthest</span>
     </div>
   </section>
 
@@ -1450,6 +1468,102 @@ h1,h2,h3{font-family:"Archivo Black",sans-serif;font-weight:400;margin:0;letter-
   } else {
     initMap();
   }
+})();
+
+(function(){
+  var HOTEL = { lat: 36.737106, lng: 138.512801 };
+
+  // Same 9 zones as the Overview map, renumbered 1-9 by straight-line
+  // distance from the hotel (closest first) and annotated with that distance.
+  var STAY_ZONES = [
+    { num: 1, name: "Ichinose", lat: 36.7383, lng: 138.5132, km: 0.14 },
+    { num: 2, name: "Higashidateyama &amp; Terakoya", lat: 36.7271, lng: 138.5190, km: 1.24 },
+    { num: 3, name: "Yakebitaiyama", lat: 36.7507, lng: 138.5184, km: 1.59 },
+    { num: 4, name: "Sun Valley cluster", lat: 36.7151, lng: 138.4857, km: 3.44 },
+    { num: 5, name: "Okushiga Kogen", lat: 36.7697, lng: 138.5146, km: 3.63 },
+    { num: 6, name: "Snow Monkey Park", lat: 36.7328, lng: 138.4623, km: 4.53 },
+    { num: 7, name: "Kita-Shiga Kogen", lat: 36.7793, lng: 138.4741, km: 5.82 },
+    { num: 8, name: "Yokoteyama", lat: 36.6750, lng: 138.5150, km: 6.91 },
+    { num: 9, name: "Yudanaka &amp; Shibu Onsen", lat: 36.7344, lng: 138.4306, km: 7.33 }
+  ];
+
+  function numIcon(num){
+    return L.divIcon({
+      className: "trip-pin",
+      html: '<span class="pin-badge">' + num + "</span>",
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+      popupAnchor: [0, -14]
+    });
+  }
+
+  function lodgingIcon(){
+    return L.divIcon({
+      className: "trip-pin",
+      html: '<span class="pin-badge lodging">🏨</span>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -18]
+    });
+  }
+
+  var stayMapReady = false;
+
+  function initStayMap(){
+    var el = document.getElementById("stay-map");
+    if (!el || stayMapReady) return;
+    stayMapReady = true;
+
+    var map = L.map("stay-map", { scrollWheelZoom: false });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.tileLayer("https://tiles.opensnowmap.org/pistes/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      maxNativeZoom: 16,
+      opacity: 0.95,
+      attribution: 'Piste data: &copy; <a href="https://www.opensnowmap.org">OpenSnowMap.org</a> (CC-BY-SA)'
+    }).addTo(map);
+
+    var points = [[HOTEL.lat, HOTEL.lng]];
+
+    STAY_ZONES.forEach(function(z){
+      L.polyline([[HOTEL.lat, HOTEL.lng], [z.lat, z.lng]], {
+        color: "#4A6259", weight: 1.5, opacity: 0.5, dashArray: "1 8"
+      }).addTo(map);
+
+      var html = '<div class="popcard"><span class="num">' + z.num + '</span><h4>' + z.name + '</h4><p>'
+        + z.km.toFixed(2) + ' km from the hotel (straight-line)</p></div>';
+      L.marker([z.lat, z.lng], { icon: numIcon(z.num) }).addTo(map).bindPopup(html);
+      points.push([z.lat, z.lng]);
+    });
+
+    L.marker([HOTEL.lat, HOTEL.lng], { icon: lodgingIcon(), zIndexOffset: 1000 })
+      .addTo(map)
+      .bindPopup('<div class="popcard"><h4>🏨 Shiga Kogen Olympic Hotel</h4><p>Where we\'re staying — 4/5 &ndash; 11 March 2027.</p></div>');
+
+    var bounds = L.latLngBounds(points);
+
+    function fitStayMap(attempt){
+      attempt = attempt || 0;
+      if (el.offsetWidth > 0 || attempt > 40) {
+        map.invalidateSize();
+        map.fitBounds(bounds, { padding: [24, 24] });
+      } else {
+        setTimeout(function(){ fitStayMap(attempt + 1); }, 100);
+      }
+    }
+    fitStayMap();
+  }
+
+  var tabAccom = document.getElementById("tab-accom");
+  if (tabAccom.checked) initStayMap();
+  tabAccom.addEventListener("change", function(){
+    setTimeout(initStayMap, 60);
+  });
 })();
 </script>
 
